@@ -1,2 +1,9 @@
 # ntmap
-Network topology map using Netbox as a data source
+Ntmap is a tool to visualize network topologies using [Netbox](https://github.com/netbox-community/netbox) as a data source
+
+# Dependencies
+Netbox 2.8.8
+Python 3.x
+PostgreSQL
+Unicorn
+D3.js
