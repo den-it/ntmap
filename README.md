@@ -91,31 +91,29 @@ Download the latest release from GitHub as a ZIP archive and extract it to your 
 # mv /opt/ntmap-master /opt/ntmap
 ```
 
-Add ntmap user to your system:
-```
-# groupadd --system ntmap
-# adduser --system --ingroup ntmap ntmap
-# chown --recursive ntmap /opt/ntmap
-# chgrp -R ntmap /opt/ntmap
-```
+Ntmap stores its own data in PostgreSQL DB. In the example above we used local PostgreSQL installation. If you want to use a remote DB, you can change this in the settings.ini file.
 
-Ntmap stores its data in PostgreSQL DB. In the example above we used local PostgreSQL installation. If you want to use a remote DB, you can change this in the settings.ini file.
-
-Ntmap doesn't use Netbox API due to perfomance issues. It fetches Netbox data directly from Netbox DB. You need to set up a connect string to Netbox DB also in settings.ini file.
-
-**Note:** if you use remote PostgreSQL installation, ensure that your PostgreSQL is ready to accept connections from your machine (pay attention to iptables and PostgreSQL configuration).
+Ntmap doesn't use Netbox API due to perfomance issues. It fetches Netbox data directly from Netbox DB. You need to set up a connect string to Netbox DB also in settings.ini file. **Note:** if you use remote PostgreSQL installation, ensure that your PostgreSQL is ready to accept connections from your machine (pay attention to iptables and PostgreSQL configuration).
 
 ```
 # cd /opt/ntmap/backend/app
 # cp example.settings.ini settings.ini
-# nano settings.ini  # change Ntmap and Netbox DB connect strings
+# nano settings.ini  # change Ntmap and Netbox DB connect strings here
 ```
 
 Edit Ntmap frontend settings. You need to set NETBOX_URL in settings.js to point to your Netbox installation:
 ```
 # cd /opt/ntmap/www/js
 # cp example.settins.js settings.js
-# nano settings.js
+# nano settings.js  # change Netbox URL here
+```
+
+Add ntmap user to your system:
+```
+# groupadd --system ntmap
+# adduser --system --ingroup ntmap ntmap
+# chown --recursive ntmap /opt/ntmap
+# chgrp -R ntmap /opt/ntmap
 ```
 
 We'll use systemd to control the daemonization of Ntmap services. First, copy service file to systemd directory:
