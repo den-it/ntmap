@@ -1,0 +1,261 @@
+/* Common styles */
+/***********************************************************************************/
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0px;
+	font-size: 14px;
+}
+
+a:link {
+	color: #70f;
+}
+a:visited {
+	color: #70f;
+}
+	
+.secondary_text {
+	fill: #999999;
+	color: #999999;
+}
+
+.secondary_text:link {
+	fill: #999999;
+	color: #999999;
+}
+
+.secondary_text:visited {
+	fill: #999999;
+	color: #999999;
+}
+
+.div-vert-line-80 {
+    display:block;
+    height:50px;
+    width:1px;
+    background:#cccccc;
+}
+
+
+/* Edit map form styles */
+/***********************************************************************************/
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.modal-father {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+.modal {
+    position: fixed;
+    z-index: 11; /* 1px higher than the overlay layer */
+    top: 50%;
+    left: 50%;
+    background-color: #FFBE08;
+    border-radius: 5px;
+	padding: 20px;
+}
+
+.field-caption {
+	margin-bottom: 0.2em;
+}
+
+/* SVG styles */
+/***********************************************************************************/
+
+/* link labels (figure inside a circle, representing the number of physical links) */
+
+.labels {
+	font-size:  10px;
+	fill: white;
+}
+
+.link0gb {
+  stroke: #FFD553;
+}
+
+.link0gb-info {
+	background: #FFD553;
+}
+
+.link0gb-label-circle {
+  fill: #FFD553;
+}
+
+.link-1gb {
+  stroke: red;
+}
+
+.link-1gb-info {
+	background: red;
+}
+
+.link-1gb-label-circle {
+  fill: red;
+}
+
+.link1gb {
+  stroke: #e1a800;
+}
+
+.link1gb-info {
+	background: #e1a800;
+}
+
+.link1gb-label-circle {
+  fill: #e1a800;
+}
+
+.link10gb {
+  stroke: #00DCB4;
+}
+
+.link10gb-info {
+	background: #00DCB4;
+}
+
+.link10gb-label-circle {
+  fill: #00DCB4;
+}
+
+.link25gb {
+  stroke: #75939c;
+}
+
+.link25gb-info {
+	background: #75939c;
+}
+
+.link25gb-label-circle {
+  fill: #75939c;
+}
+
+.link40gb {
+  stroke: #8600FF;
+}
+
+.link40gb-info {
+	background: #8600FF;
+}
+
+.link40gb-label-circle {
+  fill: #8600FF;
+}
+
+.link100gb {
+  stroke: #bc104b;
+}
+
+.link100gb-info {
+	background: #bc104b;
+}
+
+.link100gb-label-circle {
+  fill: #bc104b;
+}
+
+.clusters rect, .clusters path, rect.clusters {
+	stroke: #666666;
+	stroke-width: 1px;
+	fill: none;
+	border-collapse: collapse;
+	stroke-linejoin: round;
+	stroke-dasharray: 3;
+}
+
+.VCs rect, .VCs path, rect.VCs {
+	stroke: #999999;
+	stroke-width: 1px;
+	fill: none;
+	border-collapse: collapse;
+}
+
+
+/* Infobox styles */
+/***********************************************************************************/
+
+.infobox {
+	padding: 20px;
+	padding-top: 0;
+	margin-bottom: 20px;
+  
+	background-color: #efefef; 
+	/* background-color: #f1c40f; */
+	border: 1px solid #999999;
+	
+	position: fixed;
+	top: 2vh; 
+	right: 10px;
+    width: 700px;
+	1height: 94vh;
+	height: calc(100vh - 50px); 
+	z-index:10;
+	1overflow-y: scroll;
+}
+
+
+table.infobox_tab {
+	/* scroll */
+	margin-top:  44px; 
+	display: inline-block; 
+	overflow: auto;
+	/* height:  100vh; */ /* default value. When infobox is displayed the height of the table is altered by JS to fit infobox borders */
+	/* design */
+	/* border: 1px solid #FFFFFF; */
+	width: 100%;
+	border-collapse: collapse;
+}
+table.infobox_tab th div {
+	/* scroll */
+	margin-top: -44px;
+	position: absolute;
+	/* design */
+	text-align: left;	
+	padding: 0.4em;
+	padding-left: 0.6em;
+	padding-right: 0.6em;
+}
+table.infobox_tab thead th {
+	/* design */
+	border: 1px solid #efefef;
+	border-bottom: 1px solid #ffffff;
+	background: #efefef;
+  /*font-weight: bold;
+  vertical-align: top;
+  font-size: 14px;*/
+}
+table.infobox_tab td {
+	border: 1px solid #ffffff;
+	padding: 0.4em;
+	padding-left: 0.6em;
+	padding-right: 0.6em;
+}
+table.infobox_tab tr:nth-child(odd) {
+	background: #dfdfdf;
+}
+table.infobox_tab tr:hover {
+	background: #ffffff;
+}
+table.infobox_tab tr.last_tr {
+	background: none;
+}
+table.infobox_tab tr.last_tr td {
+	background: none;
+	padding: 0;
+	border: 0;
+}
+
+.link-speed-info {
+	transform: rotate(-90deg);
+	color: #ffffff;
+	font-size: 10px;
+	margin: 0;
+	padding: 0;
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+	
+	<g id="server.svg">
+		<style type="text/css">
+		<![CDATA[
+			.server_st1 { fill:#f4b400; stroke:none; stroke-linecap:round; stroke-linejoin:round; stroke-width:0.75 }
+			.server_st2 { stroke:#ffffff; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.5; fill:none; }
+		]]>
+		</style>
+		
+		<rect x="0" y="0" width="32" height="32" class="server_st1"/>
+		<ellipse cx="16" cy="23" rx="2" ry="2" class="server_st2"/>
+		<line x1="10" x2="22" y1="6" y2="6" class="server_st2"/>
+		<line x1="10" x2="22" y1="10" y2="10" class="server_st2"/>
+	</g>
+	
+</svg>

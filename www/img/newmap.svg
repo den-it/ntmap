@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB"
+		class="st3">
+		
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#57d9b7;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		.st2 {fill:#ffffff; stroke-width: 2.1; }
+		.st3 {fill:white; fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3; font-family: Arial, Helvetica, sans-serif; }
+	]]>
+	</style>
+
+	<g>
+		<rect x="0" y="0" rx="5" ry="5" width="77" height="16" class="st1"/>
+		<rect x="9" y="3" width="2" height="10" class="st2"/>
+		<rect y="7" x="5" height="2" width="10" class="st2"/>
+		<text x="20" y="12">New map</text>
+	</g>
+</svg>

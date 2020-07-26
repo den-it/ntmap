@@ -1,0 +1,22 @@
+[Unit]
+Description=Ntmap WSGI Service
+Documentation=https://github.com/den-it/ntmap
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+User=ntmap
+Group=ntmap
+PIDFile=/var/tmp/ntmap.pid
+WorkingDirectory=/opt/ntmap/backend
+
+ExecStart=/usr/local/bin/gunicorn --pid /var/tmp/ntmap.pid --pythonpath /opt/ntmap/backend --config /opt/ntmap/backend/gunicorn.py wsgi
+
+Restart=on-failure
+RestartSec=30
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

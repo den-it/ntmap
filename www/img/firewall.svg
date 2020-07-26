@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" 
+		xml:space="preserve" color-interpolation-filters="sRGB" >
+
+	<g id="firewall.svg">
+		<style type="text/css">
+		<![CDATA[
+			.firewall_st1 {fill:#ff7b24;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+			.firewall_st2 {stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
+		]]>
+		</style>
+
+		<g>
+			<g id="group17-1" transform="translate(0,-809.858)">
+				<g id="shape7-2">
+					<rect x="0" y="809.858" width="32.0315" height="32.0315" class="firewall_st1"/>
+				</g>
+				<g id="shape8-4" transform="translate(0,-21.4551)">
+					<path d="M0 841.89 L32.03 841.89" class="firewall_st2"/>
+				</g>
+				<g id="shape9-7" transform="translate(0,-10.8786)">
+					<path d="M0 841.89 L32.03 841.89" class="firewall_st2"/>
+				</g>
+				<g id="shape11-10" transform="translate(858.208,820.435) rotate(90)">
+					<path d="M0 841.89 L10.58 841.89" class="firewall_st2"/>
+				</g>
+				<g id="shape12-13" transform="translate(-833.429,820.435) rotate(-90)">
+					<path d="M0 841.89 L10.58 841.89" class="firewall_st2"/>
+				</g>
+				<g id="shape14-16" transform="translate(864.856,809.858) rotate(90)">
+					<path d="M0 841.89 L10.58 841.89" class="firewall_st2"/>
+				</g>
+				<g id="shape15-19" transform="translate(850.351,831.011) rotate(90)">
+					<path d="M0 841.89 L10.88 841.89" class="firewall_st2"/>
+				</g>
+				<g id="shape16-22" transform="translate(866.064,831.011) rotate(90)">
+					<path d="M0 841.89 L10.88 841.89" class="firewall_st2"/>
+				</g>
+			</g>
+		</g>
+	</g>
+	
+</svg>

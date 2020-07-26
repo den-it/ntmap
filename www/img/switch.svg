@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+	
+	<g id="switch.svg">
+		<style type="text/css">
+		<![CDATA[
+			.switch_st1 { fill: #008eee;  stroke: none;  stroke-linecap: round;  stroke-linejoin: round;  stroke-width: 0.75 }
+			.switch_st2 { fill: #ffffff;  stroke: none;  stroke-linecap: round;  stroke-linejoin: round;  stroke-width: 0.75 }
+			.switch_st3 { fill: none; stroke: #ffffff;  stroke-linecap: round;  stroke-linejoin: round;  stroke-width: 2 }
+		]]>
+		</style>
+
+			<rect x="0" y="0" width="32" height="32" class="switch_st1"/>
+		
+			<path d="M8,24 12,24 20,8 24,8" class="switch_st3"/>
+			<path d="M8,8 12,8 20,24 24,24" class="switch_st3"/>
+			
+			<path d="M 0,-1 L 5,3 L 0,7 z" transform="translate(23,5)" class="switch_st2"/>
+			<path d="M 0,-1 L 5,3 L 0,7 z" transform="translate(23,21)" class="switch_st2"/>
+
+			<path d="M 0,-1 L 5,3 L 0,7 z" transform="translate(9,11) rotate(180)" class="switch_st2"/>
+			<path d="M 0,-1 L 5,3 L 0,7 z" transform="translate(9,27) rotate(180)" class="switch_st2"/>
+	</g>
+	
+</svg>

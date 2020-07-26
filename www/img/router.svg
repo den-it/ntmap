@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+		
+	<g id="router.svg">
+		<style type="text/css">
+		<![CDATA[
+			.router_st1 {fill:#c00000;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+			.router_st2 {fill:#fefefe;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		]]>
+		</style>
+
+		<ellipse cx="16" cy="16" rx="16" ry="16" class="router_st1"/>
+
+		<g>
+			<g id="group16-1" transform="translate(0,-809.863)">
+				<g id="shape2-2" transform="translate(585.548,227.43) rotate(44.7)">
+				</g>
+				<g id="group3-4" transform="translate(608.443,232.415) rotate(44.7)">
+					<g id="shape4-5" transform="translate(4.94173,0)">
+						<path d="M0 837.34 L0 840.02 L0 841.89 L4.29 838.54 L0 835.19 L0 837.34 Z" class="router_st2"/>
+					</g>
+					<g id="shape5-7" transform="translate(4.59632E-14,-1.96898)">
+						<rect x="0" y="839.132" width="5.96028" height="2.75743" class="router_st2"/>
+					</g>
+				</g>
+				<g id="group6-9" transform="translate(-576.449,1419.3) rotate(-135.3)">
+					<g id="shape7-10" transform="translate(4.94173,0)">
+						<path d="M0 837.34 L0 840.02 L0 841.89 L4.29 838.54 L0 835.19 L0 837.34 Z" class="router_st2"/>
+					</g>
+					<g id="shape8-12" transform="translate(4.59632E-14,-1.96898)">
+						<rect x="0" y="839.132" width="5.96028" height="2.75743" class="router_st2"/>
+					</g>
+				</g>
+				<g id="group9-14" transform="translate(-577.591,233.53) rotate(-45.3)">
+					<g id="shape10-15" transform="translate(4.94173,0)">
+						<path d="M0 837.34 L0 840.02 L0 841.89 L4.29 838.54 L0 835.19 L0 837.34 Z" class="router_st2"/>
+					</g>
+					<g id="shape11-17" transform="translate(4.59632E-14,-1.96898)">
+						<rect x="0" y="839.132" width="5.96028" height="2.75743" class="router_st2"/>
+					</g>
+				</g>
+				<g id="group12-19" transform="translate(609.295,1418.42) rotate(134.7)">
+					<g id="shape13-20" transform="translate(4.94173,0)">
+						<path d="M0 837.34 L0 840.02 L0 841.89 L4.29 838.54 L0 835.19 L0 837.34 Z" class="router_st2"/>
+					</g>
+					<g id="shape14-22" transform="translate(4.59632E-14,-1.96898)">
+						<rect x="0" y="839.132" width="5.96028" height="2.75743" class="router_st2"/>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+	
+</svg>

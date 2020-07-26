@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB" class="unknown_st3">
+	
+	<g id="unknown.svg">
+		<style type="text/css">
+		<![CDATA[
+			.unknown_st1 {fill:#595959;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+			.unknown_st2 {fill:#ffffff;font-family:Arial;font-size:1.5em;font-weight:bold}
+			.unknown_st3 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		]]>
+		</style>
+
+		<g>
+			<g id="shape1-1" transform="translate(0,-809.858)">
+				<rect x="0" y="809.858" width="32.0315" height="32.0315" class="unknown_st1"/>
+				<text x="10.52" y="831.27" class="unknown_st2">?</text>		
+			</g>
+		</g>
+	</g>
+</svg>

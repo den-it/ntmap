@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB" class="vc_st3">
+	
+	<g id="vc.svg">	
+		<style type="text/css">
+		<![CDATA[
+			.vc_st1 { fill: #ffe393; stroke:none; }
+			.vc_st2 { fill: #000000; stroke:none; font-family: Arial, Helvetica, sans-serif; font-size:7px; font-weight: bold; }
+			.vc_st3 { fill: none;fill-rule:evenodd;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		]]>
+		</style>
+
+		<g>
+			<g>
+				<ellipse cx="8" cy="8" rx="8" ry="8" class="vc_st1"/>
+				<text x="3" y="11" class="vc_st2">VC</text>
+			</g>
+		</g>
+	</g>
+</svg>

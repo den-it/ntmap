@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+
+	<g id="cryptogw.svg">
+		<style type="text/css">
+		<![CDATA[
+			.cryptogw_st1 {fill:#EE3673; stroke:none; stroke-linecap:round; stroke-linejoin:round; stroke-width:0.75}
+			.cryptogw_st3 {stroke:#ffffff; stroke-linecap:round; stroke-linejoin:round; stroke-width:1; fill:#EE3673; }
+		]]>
+		</style>
+		
+		<rect x="0" y="0" width="32" height="32" class="cryptogw_st1"/>
+		<rect x="16" y="21" width="4" height="4" class="cryptogw_st3"/>
+		<rect x="15" y="6" width="2" height="20" class="cryptogw_st3"/>
+		<circle cx="16" cy="10" r="5" class="cryptogw_st3"/>
+		<circle cx="16" cy="8" r="1" class="cryptogw_st3"/>
+	</g>
+
+</svg>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		width="8.26772in" height="11.6929in" viewBox="0 0 595.276 841.89" xml:space="preserve" color-interpolation-filters="sRGB" class="vrsg_st5">
+
+	<g id="vrsg.svg">
+		<style type="text/css">
+		<![CDATA[
+			.vrsg_st1 {fill:#7f7f7f;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+			.vrsg_st2 {fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5}
+			.vrsg_st3 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+			.vrsg_st4 {fill:#f4b400;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+			.vrsg_st5 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		]]>
+		</style>
+
+		<g>
+			<g id="group11-1" transform="translate(18,-791.858)">
+				<g id="shape1-2">
+					<rect x="0" y="809.858" width="32.0315" height="32.0315" class="vrsg_st1"/>
+				</g>
+				<g id="shape2-4" transform="translate(4.80472,-18.4181)">
+					<ellipse cx="4.40433" cy="837.485" rx="4.40433" ry="4.40433" class="vrsg_st2"/>
+				</g>
+				<g id="shape4-6" transform="translate(4.80472,-5.20512)">
+					<ellipse cx="4.40433" cy="837.485" rx="4.40433" ry="4.40433" class="vrsg_st2"/>
+				</g>
+				<g id="group8-8" transform="translate(-399.284,99.028) rotate(-30)">
+					<g id="shape5-9" transform="translate(0,-5.68559)">
+						<path d="M0 841.89 L7.61 841.89 L3.8 836.36 L0 841.89 Z" class="vrsg_st3"/>
+					</g>
+					<g id="shape6-11" transform="translate(1.80177,0)">
+						<rect x="0" y="835.483" width="4.00394" height="6.4063" class="vrsg_st3"/>
+					</g>
+				</g>
+				<g id="shape9-13" transform="translate(7.20709,-20.8205)">
+					<ellipse cx="2.00197" cy="839.888" rx="2.00197" ry="2.00197" class="vrsg_st4"/>
+				</g>
+			</g>
+		</g>
+	</g>
+	
+</svg>

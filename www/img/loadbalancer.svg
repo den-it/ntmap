@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+	
+	<g id="loadbalancer.svg">
+		<style type="text/css">
+		<![CDATA[
+			.loadbalancer_st1 { fill: #c00000; stroke: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 0.75 }
+			.loadbalancer_st2 { fill: #ffffff; stroke: none; stroke-linecap: square; stroke-linejoin: square; stroke-width: 1 }
+			.loadbalancer_st3 { fill: none; stroke: #ffffff; stroke-linecap: square; stroked-miterlimit: 3; stroke-width: 2 }
+		]]>
+		</style>
+
+		<ellipse cx="16" cy="16" rx="16" ry="16" class="loadbalancer_st1"/>
+		
+		<line x1="8" x2="16" y1="15" y2="15" class="loadbalancer_st3"/>
+
+		<g transform="translate(17,12)">
+			<line x1="0" x2="6" y1="3" y2="3" class="loadbalancer_st3"/>
+			<path d="M 6,0 L 11,3 L 6,6 z" class="loadbalancer_st2"/>
+		</g>
+		<g transform="translate(16,14) rotate(45)">
+			<line x1="0" x2="6" y1="3" y2="3" class="loadbalancer_st3"/>
+			<path d="M 6,0 L 11,3 L 6,6 z" class="loadbalancer_st2"/>
+		</g>
+		<g transform="translate(12,12) rotate(-45)">
+			<line x1="0" x2="6" y1="3" y2="3" class="loadbalancer_st3"/>
+			<path d="M 6,0 L 11,3 L 6,6 z" class="loadbalancer_st2"/>
+		</g>
+	</g>
+	
+</svg>

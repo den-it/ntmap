@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+	
+	<g id="mngswitch.svg">
+		<style type="text/css">
+		<![CDATA[
+			.mngswitch_st1 {fill:#66ccff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+			.mngswitch_st2 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		]]>
+		</style>
+
+		<g>
+			<g id="group7-1" transform="translate(0,-809.858)">
+				<g id="shape5-2">
+					<rect x="0" y="809.858" width="32.0315" height="32.0315" class="mngswitch_st1"/>
+				</g>
+				<g id="shape3-4" transform="translate(12.64,-16.6564)">
+					<path d="M0 840 L12.94 840 L12.94 841.89 L17.26 838.65 L12.94 835.15 L12.94 837.31 L0 837.31 L0 840 Z" class="mngswitch_st2"/>
+				</g>
+				<g id="shape4-6" transform="translate(20.4592,1667.86) rotate(180)">
+					<path d="M0 840 L12.94 840 L12.94 841.89 L17.26 838.65 L12.94 835.15 L12.94 837.31 L0 837.31 L0 840 Z" class="mngswitch_st2"/>
+				</g>
+			</g>
+		</g>
+	</g>
+
+</svg>

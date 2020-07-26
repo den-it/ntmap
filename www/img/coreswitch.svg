@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Создано Microsoft Visio, экспорт SVG coreswitch.svg coreswitch2 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+
+	<g id="coreswitch.svg">
+		<style type="text/css">
+		<![CDATA[
+			.coreswitch_st1 {fill:#8600ff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+			.coreswitch_st2 {fill:#ffffff;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.75}
+		]]>
+		</style>
+
+		<g v:mID="8" v:index="3" v:groupContext="foregroundPage">
+			<g id="group34-1" transform="translate(0,-809.858)" v:mID="34" v:groupContext="group">
+				<g id="shape23-2" v:mID="23" v:groupContext="shape">
+					<rect x="0" y="809.858" width="32.0315" height="32.0315" class="coreswitch_st1"/>
+				</g>
+				<g id="group24-4" transform="translate(2.52303,-1.83345)" v:mID="24" v:groupContext="group">
+					<g id="shape25-5" v:mID="25" v:groupContext="shape" transform="translate(17.3613,-11.9012)">
+						<path d="M0 840.5 L6.6 840.5 L6.6 841.89 L9.62 839.51 L6.6 837.03 L6.6 838.49 L0 838.49 L0 840.5 Z" class="coreswitch_st2"/>
+					</g>
+					<g id="shape26-7" v:mID="26" v:groupContext="shape" transform="translate(9.62418,1667.07) rotate(180)">
+						<path d="M0 840.5 L6.6 840.5 L6.6 841.89 L9.62 839.51 L6.6 837.03 L6.6 838.49 L0 838.49 L0 840.5 Z" class="coreswitch_st2"/>
+					</g>
+					<g id="shape27-9" v:mID="27" v:groupContext="shape" transform="translate(-826.274,823.641) rotate(-90)">
+						<path d="M0 840.57 L6.94 840.57 L6.94 841.89 L10.12 839.63 L6.94 837.27 L6.94 838.66 L0 838.66 L0 840.57 Z" class="coreswitch_st2"/>
+					</g>
+					<g id="shape28-11" v:mID="28" v:groupContext="shape" transform="translate(852.929,831.774) rotate(90)">
+						<path d="M0 840.57 L6.94 840.57 L6.94 841.89 L10.12 839.63 L6.94 837.27 L6.94 838.66 L0 838.66 L0 840.57 Z" class="coreswitch_st2"/>
+					</g>
+					<g id="shape29-13" v:mID="29" v:groupContext="shape" transform="translate(-577.374,231.057) rotate(-45)">
+						<path d="M0 840.54 L6.77 840.54 L6.77 841.89 L9.87 839.57 L6.77 837.15 L6.77 838.58 L0 838.58 L0 840.54 Z" class="coreswitch_st2"/>
+					</g>
+					<g id="shape30-15" v:mID="30" v:groupContext="shape" transform="translate(604.652,1424.28) rotate(135)">
+						<path d="M0 840.54 L6.77 840.54 L6.77 841.89 L9.87 839.57 L6.77 837.15 L6.77 838.58 L0 838.58 L0 840.54 Z" class="coreswitch_st2"/>
+					</g>
+					<g id="shape31-17" v:mID="31" v:groupContext="shape" transform="translate(-582.674,1418.56) rotate(-135)">
+						<path d="M0 840.54 L6.77 840.54 L6.77 841.89 L9.87 839.57 L6.77 837.15 L6.77 838.58 L0 838.58 L0 840.54 Z" class="coreswitch_st2"/>
+					</g>
+					<g id="shape32-19" v:mID="32" v:groupContext="shape" transform="translate(609.906,237.192) rotate(45)">
+						<path d="M0 840.54 L6.77 840.54 L6.77 841.89 L9.87 839.57 L6.77 837.15 L6.77 838.58 L0 838.58 L0 840.54 Z" class="coreswitch_st2"/>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+	
+</svg>
