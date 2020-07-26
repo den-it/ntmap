@@ -64,30 +64,40 @@ postgres=# \q
 ### Set Up Python Environment
 
 Install Python:
-```# apt-get install -y python3.6 python3-pip```
+```
+# apt-get install -y python3.6 python3-pip
+```
 
 Install psycopg2:
-```# sudo apt-get install python3-psycopg2```
+```
+# sudo apt-get install python3-psycopg2
+```
 
 
 ### Gunicorn Setup
 
 Install Gunicorn:
-```# pip3 install gunicorn```
+```
+# pip3 install gunicorn
+```
 
 
 ### Ntmap Setup
 
 Download the latest release from GitHub as a ZIP archive and extract it to your desired path. In this example, we'll use /opt/ntmap.
-```# wget https://github.com/den-it/ntmap/archive/master.zip
+```
+# wget https://github.com/den-it/ntmap/archive/master.zip
 # sudo unzip master.zip -d /opt
-# mv /opt/ntmap-master /opt/ntmap```
+# mv /opt/ntmap-master /opt/ntmap
+```
 
 Add ntmap user to your system:
-```# groupadd --system ntmap
+```
+# groupadd --system ntmap
 # adduser --system --ingroup ntmap ntmap
 # chown --recursive ntmap /opt/ntmap
-# chgrp -R ntmap /opt/ntmap```
+# chgrp -R ntmap /opt/ntmap
+```
 
 Ntmap stores its data in PostgreSQL DB. In the example above we used local PostgreSQL installation. If you want to use a remote DB, you can change this in the settings.ini file.
 
@@ -95,25 +105,34 @@ Ntmap doesn't use Netbox API due to perfomance issues. It fetches Netbox data di
 
 **Note:** if you use remote PostgreSQL installation, ensure that your PostgreSQL is ready to accept connections from your machine (pay attention to iptables and PostgreSQL configuration).
 
-```# cd /opt/ntmap/backend/app
+```
+# cd /opt/ntmap/backend/app
 # cp example.settings.ini settings.ini
-# nano settings.ini  # change Ntmap and Netbox DB connect strings```
+# nano settings.ini  # change Ntmap and Netbox DB connect strings
+```
 
 Edit Ntmap frontend settings. You need to set NETBOX_URL in settings.js to point to your Netbox installation:
-```# cd /opt/ntmap/www/js
+```
+# cd /opt/ntmap/www/js
 # cp example.settins.js settings.js
-# nano settings.js```
+# nano settings.js
+```
 
 We'll use systemd to control the daemonization of Ntmap services. First, copy service file to systemd directory:
-```# cp /opt/ntmap/install/ntmap.service /etc/systemd/system/```
+```
+# cp /opt/ntmap/install/ntmap.service /etc/systemd/system/
+```
 
 Then, start the ntmap service and enable it to initiate at boot time:
-```# systemctl daemon-reload
+```
+# systemctl daemon-reload
 # systemctl start ntmap
-# systemctl enable ntmap```
+# systemctl enable ntmap
+```
 
 You can use the command systemctl status ntmap to verify that the WSGI service is running:
 ```
+# service ntmap status
 ● ntmap.service - Ntmap WSGI Service
    Loaded: loaded (/etc/systemd/system/ntmap.service; enabled; vendor preset: enabled)
    Active: active (running) since Sun 2020-07-26 10:56:19 MSK; 8min ago
@@ -126,24 +145,33 @@ You can use the command systemctl status ntmap to verify that the WSGI service i
            ├─5115 /usr/bin/python3 /usr/local/bin/gunicorn --pid /var/tmp/ntmap.pid --pythonpath /opt/ntmap/backend --config /opt/ntmap/backend/gunicorn
 		   ...
 ```
+
 At this point, you should be able to connect to the HTTP service at the server name or IP address you provided.
 
 
 ### NGINX Setup
 
 Install NGINX.
-```# apt-get install -y nginx```
+```
+# apt-get install -y nginx
+```
 
 Once NGINX is installed, copy the default NGINX configuration file to /etc/nginx/sites-available/ntmap. Be sure to use the domain name (or IP address) of your installation and appropriate path to html files.
-```# cp /opt/ntmap/install/nginx.conf /etc/nginx/sites-available/ntmap```
+```
+# cp /opt/ntmap/install/nginx.conf /etc/nginx/sites-available/ntmap
+```
 
 Then, delete /etc/nginx/sites-enabled/default and create a symlink in the sites-enabled directory to the configuration file you just created:
-```# cd /etc/nginx/sites-enabled/
+```
+# cd /etc/nginx/sites-enabled/
 # rm default
-# ln -s /etc/nginx/sites-available/ntmap```
+# ln -s /etc/nginx/sites-available/ntmap
+```
 
 Finally, restart the NGINX service to use the configuration you just provided:
-```# service nginx restart```
+```
+# service nginx restart
+```
 
 You can open a web browser and use Ntmap now.
 
@@ -153,23 +181,33 @@ You can open a web browser and use Ntmap now.
 Ntmap doesn't provide internal auth methods. If you want to open Ntmap data only for a list of allowed users, you can use the simple auth mechanism of NGINX.
 
 First you need to generate a password file - htpasswd. It can be done by OpenSSL, Apache Utilities or even using online htpasswd generators. In the example below we use Apache Utilities:
-```# apt-get install apache2-utils
-# htpasswd -c /etc/nginx/.htpasswd user1```
+```
+# apt-get install apache2-utils
+# htpasswd -c /etc/nginx/.htpasswd user1
+```
 
 You will be asked to supply and confirm a password for the user. Leave out the -c argument for any additional users you wish to add:
-```# htpasswd /etc/nginx/.htpasswd user2```
+```
+# htpasswd /etc/nginx/.htpasswd user2
+```
 
 Then, you need to edit NGINX configuration: 
-```# nano /etc/nginx/sites-available/ntmap```
+```
+# nano /etc/nginx/sites-available/ntmap
+```
 
 Just add a section below to your config:
-```location / {
+```
+location / {
 	auth_basic "Restricted Content";
 	auth_basic_user_file /etc/nginx/.htpasswd;
-}```
+}
+```
 
 Then restart the NGINX service to use new configuration:
-```# service nginx restart```
+```
+# service nginx restart
+```
 
 To confirm that your content is protected, try to access your Ntmap site in a web browser.
 
@@ -181,12 +219,14 @@ The usage of Ntmap is very simple. You can have several (or many) network topolo
 To edit groups of maps or maps themselves just click **lock** symbol on the "L1 maps" page. You will enter edit mode. Add needed groups and maps.
 
 To define a map give it a name and describe devices you want to display in the "Scheme" field. Example:
-```dc1-rt, dc1-fw
+```
+dc1-rt, dc1-fw
 dc1-spsw
 dc1-blfsw, dc1-lfsw
 dc1-mngsw
 dc1-srv, dc1-nas
-dc1-```
+dc1-
+```
 
 Ntmap will search Netbox database for given name patterns and will display found devices on map. Each line of the scheme represents a level at which found device will be displayed on the final graph.
 
