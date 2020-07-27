@@ -61,27 +61,6 @@ postgres=# \q
 ```
 
 
-### Set Up Python Environment
-
-Install Python:
-```
-# apt-get install -y python3.6 python3-pip
-```
-
-Install psycopg2:
-```
-# sudo apt-get install python3-psycopg2
-```
-
-
-### Gunicorn Setup
-
-Install Gunicorn:
-```
-# pip3 install gunicorn
-```
-
-
 ### Ntmap Setup
 
 Download the latest release from GitHub as a ZIP archive and extract it to your desired path. In this example, we'll use /opt/ntmap.
@@ -107,6 +86,34 @@ Edit Ntmap frontend settings. You need to set NETBOX_URL in settings.js to point
 # cp example.settins.js settings.js
 # nano settings.js  # change Netbox URL here
 ```
+
+
+### Python & Gunicorn Setup
+
+Install Python:
+```
+# apt-get install -y python3.6 python3-pip
+```
+
+We'll use a Python virtual environment to ensure Ntmap's required packages don't conflict with anything in the base system. This will create a directory named venv in our Ntmap root.
+```
+# sudo apt-get install python3.6-venv
+# sudo python3.6 -m venv /opt/ntmap/venv
+# source /opt/ntmap/venv/bin/activate
+```
+
+Install psycopg2:
+```
+(venv) # pip3 install psycopg2-binary
+```
+
+Install Gunicorn:
+```
+(venv) # pip3 install gunicorn
+(venv) # deactivate
+```
+
+### Service Setup
 
 Add ntmap user to your system:
 ```

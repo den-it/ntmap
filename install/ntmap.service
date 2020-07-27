@@ -12,7 +12,7 @@ Group=ntmap
 PIDFile=/var/tmp/ntmap.pid
 WorkingDirectory=/opt/ntmap/backend
 
-ExecStart=/usr/local/bin/gunicorn --pid /var/tmp/ntmap.pid --pythonpath /opt/ntmap/backend --config /opt/ntmap/backend/gunicorn.py wsgi
+ExecStart=/opt/ntmap/venv/bin/gunicorn --pid /var/tmp/ntmap.pid --pythonpath /opt/ntmap/backend --config /opt/ntmap/backend/gunicorn.py wsgi
 
 Restart=on-failure
 RestartSec=30
