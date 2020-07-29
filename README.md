@@ -245,7 +245,7 @@ And a network graph for management links like this:
 
 ![Screenshot of DC1 network topology map management links](docs/media/dc1_mng_map.png "DC1 Network Topology Map Management Links")
 
-### Changing Ntmapap Settings
+### Changing Ntmap Settings
 
 #### New Icons
 
@@ -254,9 +254,9 @@ You can add your own icons to Ntmap graphs. To do this, you need to create new S
 For example, 
 ```
 var DEVICE_ROLES = {
-	"Router": 						"router.svg",
-	"Firewall": 						"firewall.svg",
-	"Unknown": 					"unknown.svg"
+	"Router": "router.svg",
+	"Firewall": "firewall.svg",
+	"Unknown": "unknown.svg"
 }
 ```
 defines that all devices with role "Router" found in Netbox will be depicted by **router.svg** and all firewalls will be shown as **firewall.svg**. All other devices will be shown as **unknown.svg** (question mark icon).
