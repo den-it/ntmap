@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" 
+		xml:space="preserve" color-interpolation-filters="sRGB" >
+
+	<g id="firewall.svg">
+		<style type="text/css">
+		<![CDATA[
+			.ips_st1 { fill: #bf7b00; stroke: none; }
+			.ips_st2 { fill: none; stroke:#ffffff; stroke-linecap:round; stroke-linejoin: round; stroke-width: 2; }
+			.ips_st3 { fill: none; stroke:#ffffff; stroke-linecap:round; stroke-linejoin: round; stroke-width: 1; }
+		]]>
+		</style>
+
+		<g>
+			<rect x="0" y="0" width="32" height="32" class="ips_st1"/>
+			<circle cx="15" cy="15" r="8" class="ips_st2"/>
+			<line x1="21" y1="21" x2="26" y2="26" class="ips_st2"/>
+			<line x1="8" y1="12" x2="17" y2="12" class="ips_st3"/>
+			<line x1="13" y1="18" x2="22" y2="18" class="ips_st3"/>
+		</g>
+	</g>
+	
+</svg>

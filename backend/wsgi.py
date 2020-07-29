@@ -209,8 +209,8 @@ def isLongestMatch(name, referencePattern, patternsDict):
 
 # Returns True if link between two interfaces is considered a management (not production) link. This is done simply based on the name of both interfaces
 def isMngLink(if1, if2):
-    mngPatterns = ["fxp0", "fxp1", "me0", "mng", "mgmt", "extm", "ipmi"]
-
+    mngPatterns = app.common.getOptionList(app.common.config["ntmap"]["mng_int_patterns"])
+    
     if any(mngPattern in if1.lower() for mngPattern in mngPatterns) or any(mngPattern in if2.lower() for mngPattern in mngPatterns):
         return True
     else:
@@ -303,15 +303,17 @@ def getMap(id):
                 devices = resDevices["rows"]
                 
                 if devices and len(devices):
-                    if len(devices) > 100:
-                        return { "result": "Too many devices (>100) matched the pattern of this map (\"" + namePattern + "\")" }
-                        
                     for device in devices:
                         # add found device to final graphJson only if text pattern in the current level is the longest match
                         # we need this not to add one device several times on different levels of the map
                         if (isLongestMatch(device["id"], namePattern, goodLevelsDict)):  
                             device["group"] = level
                             graphJson["results"]["nodes"].append(device)
+                            
+                            # check that number of devices to be displayed on one level is not too big
+                            nn = [n["id"] for n in graphJson["results"]["nodes"] if n["group"] == level]
+                            if len(nn) > int(app.common.config["ntmap"]["max_devices_at_one_level"]):
+                                return { "result": "Too many devices (>" + app.common.config["ntmap"]["max_devices_at_one_level"] + ") matched the pattern of this map (\"" + namePattern + "\")" }
         
         if not graphJson["results"]["nodes"]:
             return { "result": "No devices matched the patterns of this map" }

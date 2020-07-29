@@ -83,7 +83,7 @@ Ntmap doesn't use Netbox API due to perfomance issues. It fetches Netbox data di
 Edit Ntmap frontend settings. You need to set NETBOX_URL in settings.js to point to your Netbox installation:
 ```
 # cd /opt/ntmap/www/js
-# cp example.settins.js settings.js
+# cp example.settings.js settings.js
 # nano settings.js  # change Netbox URL here
 ```
 
@@ -219,6 +219,8 @@ To confirm that your content is protected, try to access your Ntmap site in a we
 
 ## Usage
 
+### Start using Ntmap
+
 The usage of Ntmap is very simple. You can have several (or many) network topology maps. All maps are organized in groups for better structurization.
 
 To edit groups of maps or maps themselves just click **lock** symbol on the "L1 maps" page. You will enter edit mode. Add needed groups and maps.
@@ -233,11 +235,38 @@ dc1-srv, dc1-nas
 dc1-
 ```
 
-Ntmap will search Netbox database for given name patterns and will display found devices on map. Each line of the scheme represents a level at which found device will be displayed on the final graph.
+Ntmap will search Netbox database for given name patterns and will display found devices on map. Each line of the scheme represents a level at which a found device will be displayed on the final graph.
 
-The example scheme above can generate a network graph like this:
+The example scheme above can generate a network graph for production links like this:
 
-![Screenshot of DC1 network topology map](docs/media/dc1_map.png "DC1 Network Topology Map")
+![Screenshot of DC1 network topology map production links](docs/media/dc1_map.png "DC1 Network Topology Map Production Links")
+
+And a network graph for management links like this:
+
+![Screenshot of DC1 network topology map management links](docs/media/dc1_mng_map.png "DC1 Network Topology Map Management Links")
+
+### Changing Ntmapap Settings
+
+#### New Icons
+
+You can add your own icons to Ntmap graphs. To do this, you need to create new SVG-images with dimensions 32 x 32 pixels in ```www/img``` directory and list them in DEVICE_ROLES variable in file ```settings.js```.
+
+For example, 
+```
+var DEVICE_ROLES = {
+	"Router": 						"router.svg",
+	"Firewall": 						"firewall.svg",
+	"Unknown": 					"unknown.svg"
+}
+```
+defines that all devices with role "Router" found in Netbox will be depicted by **router.svg** and all firewalls will be shown as **firewall.svg**. All other devices will be shown as **unknown.svg** (question mark icon).
+
+
+#### Maximum Devices at One  Level
+
+You can limit the maximum number of devices depicted at one level of your maps. This is relevant when you want to prevent Ntmap consuming too much CPU and memory of your machine. Large maps can be resourse-demanding.
+
+To do this change **max_devices_at_one_level** variable in ```settings.ini```. For changes to take effect, you need to restart Ntmap service.
 
 
 ## Providing Feedback

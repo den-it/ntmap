@@ -45,6 +45,11 @@ def deleteFromDB(connectStr, query, checkAffectedRows=False):
     except(Exception, psycopg2.Error) as error:
         return { "result": str(error) }
 
-    
+
+# Returns a list from a ConfigParser option. By default, splits on a comma and strip whitespaces.
+def getOptionList(option, sep=',', chars=None):
+    return [ chunk.strip(chars) for chunk in option.split(sep) ]
+
+
 config = configparser.ConfigParser()
 config.read("app/settings.ini")
