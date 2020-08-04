@@ -207,16 +207,6 @@ def isLongestMatch(name, referencePattern, patternsDict):
     return isLongest
 
 
-# Returns True if link between two interfaces is considered a management (not production) link. This is done simply based on the name of both interfaces
-def isMngLink(if1, if2):
-    mngPatterns = app.common.getOptionList(app.common.config["ntmap"]["mng_int_patterns"])
-    
-    if any(mngPattern in if1.lower() for mngPattern in mngPatterns) or any(mngPattern in if2.lower() for mngPattern in mngPatterns):
-        return True
-    else:
-        return False
-
-
 # Sorts interfaces better. Example: gi1/1, gi1/2, gi1/11 (not gi1/1, gi1/11, gi1/2!)
 def interfaceComparator(x, y):
     
@@ -324,12 +314,14 @@ def getMap(id):
                             d.name as device,
                             i.id AS netbox_id,
                             i.name AS name,
+                            i.mgmt_only AS mgmt_only,
                             i.lag_id AS lag_netbox_id,
                             l.name AS lag,
                             i.form_factor AS form_factor,
                             i.description AS description,
                             i._connected_interface_id AS neighbor_interface_netbox_id,
                             ni.name AS neighbor_interface,
+                            ni.mgmt_only AS neighbor_interface_mgmt_only,
                             nd.id AS neighbor_netbox_id,
                             nd.name AS neighbor
                         FROM
@@ -374,7 +366,7 @@ def getMap(id):
                 # if connected device is on map, this link is needed to be displayed
                 for i, value in enumerate(graphJson["results"]["nodes"]):
                     if (interface["neighbor_netbox_id"] == graphJson["results"]["nodes"][i]["netbox_id"]):
-                        if (isMngLink(interface["name"], interface["neighbor_interface"])):
+                        if interface["mgmt_only"] or interface["neighbor_interface_mgmt_only"]:
                             addMngLink = True
                         else:
                             addProdLink = True
@@ -382,7 +374,6 @@ def getMap(id):
                 if (addProdLink):
                     # collapse several links between the same devices to one link with property "quantity" set to the number of links and displaying the highest bandwidth
                     for link in graphJson["results"]["links"]:
-                        # print("  debug: i=" + str(i) + str(graphJson["results"]["links"][i]))
                         if ((link["source"] == interface["device"] and link["target"] == interface["neighbor"]) or 
                             (link["target"] == interface["device"] and link["source"] == interface["neighbor"])):
                             addProdLink = False
@@ -403,7 +394,6 @@ def getMap(id):
                 if (addMngLink):
                     # collapse several links between the same devices to one link with property "quantity" set to the number of links and displaying the highest bandwidth
                     for link in graphJson["results"]["mng_links"]:
-                        # print("  debug: i=" + str(i) + str(graphJson["results"]["links"][i]))
                         if ((link["source"] == interface["device"] and link["target"] == interface["neighbor"]) or 
                             (link["target"] == interface["device"] and link["source"] == interface["neighbor"])):
                             addMngLink = False
@@ -419,10 +409,6 @@ def getMap(id):
                         "bandwidth": interface["speed"],
                         "quantity": 1
                     })
-
-    """
-        graphJson["results"]["interfaces"].update({node["id"]: nodeInterfacesList})
-    """
 
     for node in graphJson["results"]["nodes"]:
         if not (node["cluster"]):
