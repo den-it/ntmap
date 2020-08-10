@@ -197,6 +197,22 @@ def getLinkSpeedOutOfFormFactor(formFactor):
     return None
 
 
+# Takes two adjacent interfaces speed (float) and returns link speed (float)
+# TODO: do it gently, considering optics and copper differencies. Do not allow to make a cable between copper and optical ports
+def getLinkSpeedOutOfTwoInterfacesSpeed(intAspeed, intBspeed):
+    if intAspeed > 0:
+        if intBspeed > 0:
+            linkSpeed = min(intAspeed, intBspeed)
+        else:
+            linkSpeed = intAspeed
+    else:
+        if intBspeed > 0:
+            linkSpeed = intBspeed
+        else:
+            linkSpeed = -1.0
+    
+    return linkSpeed
+
 # Checks if given referencePattern is the longest match for device name amoung all text patterns
 def isLongestMatch(name, referencePattern, patternsDict):
     isLongest = True
@@ -267,7 +283,8 @@ def getMap(id):
                                 vc.domain AS virtual_chassis,
                                 c.name AS cluster,
                                 r.name AS type,
-                                t.model AS model
+                                t.model AS model,
+                                m.name AS manufacturer
                             FROM 
                                 dcim_device d
                             LEFT JOIN 
@@ -282,6 +299,9 @@ def getMap(id):
                             INNER JOIN 
                                 dcim_devicetype t
                                 ON d.device_type_id = t.id 
+                            INNER JOIN 
+                                dcim_manufacturer m
+                                ON t.manufacturer_id = m.id 
                             WHERE
                                 d.name LIKE '%%{}%%';""".format(namePattern)
 
@@ -321,6 +341,7 @@ def getMap(id):
                             i.description AS description,
                             i._connected_interface_id AS neighbor_interface_netbox_id,
                             ni.name AS neighbor_interface,
+                            ni.form_factor AS neighbor_interface_form_factor,
                             ni.mgmt_only AS neighbor_interface_mgmt_only,
                             nd.id AS neighbor_netbox_id,
                             nd.name AS neighbor
@@ -353,6 +374,7 @@ def getMap(id):
             
             for interface in nodeInterfaces:
                 interface["speed"] = getLinkSpeedOutOfFormFactor(interface["form_factor"])
+                interface["neighbor_interface_speed"] = getLinkSpeedOutOfFormFactor(interface["neighbor_interface_form_factor"])
             
             nodeInterfacesDict = {node["id"]: nodeInterfaces}
             graphJson["results"]["interfaces"][node["id"]] = nodeInterfaces
@@ -379,14 +401,18 @@ def getMap(id):
                             addProdLink = False
                             link["quantity"] += 1
                             
-                            if (interface["speed"] > link["bandwidth"]):
-                                link["bandwidth"] = interface["speed"]
+                            # if we have several links between two devices draw the fattest link
+                            # TODO: draw several links of different speed in the case we have really different speeds between two boxes
+                            sp = getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"])
+                            if (sp > link["bandwidth"]):
+                                link["bandwidth"] = sp
 
                 if (addProdLink):
+                    sp = getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"])
                     graphJson["results"]["links"].append({
                         "source": interface["device"],
                         "target": interface["neighbor"],
-                        "bandwidth": interface["speed"],
+                        "bandwidth": sp,
                         "quantity": 1
                     })
                         
@@ -399,14 +425,18 @@ def getMap(id):
                             addMngLink = False
                             link["quantity"] += 1
                             
-                            if (interface["speed"] > link["bandwidth"]):
-                                link["bandwidth"] = interface["speed"]
+                            # if we have several links between two devices draw the fattest link
+                            # TODO: draw several links of different speed in the case we have really different speeds between two boxes
+                            sp = getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"])
+                            if (sp > link["bandwidth"]):
+                                link["bandwidth"] = sp
 
                 if (addMngLink):
+                    sp = getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"])
                     graphJson["results"]["mng_links"].append({
                         "source": interface["device"],
                         "target": interface["neighbor"],
-                        "bandwidth": interface["speed"],
+                        "bandwidth": sp,
                         "quantity": 1
                     })
 

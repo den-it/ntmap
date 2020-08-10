@@ -5,70 +5,82 @@
 
 <body>
 
-<div id="group-delete-alert" style="display: none">
-	<div class="overlay"></div>
-		<div class="modal" style="transform: translate(-212px, -60px);"> <!-- TODO: set form position via JS -->
-			<form>
-			<p>Are you sure? Deleting a group will cause deleting all its maps</p>
-			<p><span id="group-delete-button"></span> <input type="button" value="Cancel" onclick="hideGroupDeleteAlert();"></input></p>
-			</form>
-		</div>
+<div class="wrapper">
+	<div id="group-delete-alert" style="display: none">
+		<div class="overlay"></div>
+			<div class="modal" style="transform: translate(-212px, -60px);"> <!-- TODO: set form position via JS -->
+				<form>
+				<p>Are you sure? Deleting a group will cause deleting all its maps</p>
+				<p><span id="group-delete-button"></span> <input type="button" value="Cancel" onclick="hideGroupDeleteAlert();"></input></p>
+				</form>
+			</div>
+	</div>
+
+	<div id="map-update-form" style="display: none">
+		<div class="overlay"></div>
+			<div class="modal" style="transform: translate(-350px, -208px);"> <!-- TODO: set form position via JS -->
+				<form>
+				<input type="hidden" name="mapID" id="mapID" value="0"></input>
+				<p><b id="map-update-form-caption">Editing map</b></p>
+				<p><div class="field-caption">Group:</div>
+					<select id="mapGroup">
+					</select>
+				</p>
+				<p><div class="field-caption">Name:</div><input type="text" size="80" value="" id="mapName"></input></p>
+				<p><div class="field-caption">Scheme:</div><textarea cols="80" rows="10" id="mapScheme"></textarea></p>
+				<div style="display: none;" id="map-error-message"></div>
+				<p><input type="button" value="Update & Close" onclick="updateMapAndClose();"></input> <input type="button" value="Update" id="update-button" onclick="updateMap();"></input> <input type="button" value="Cancel" onclick="hideMapUpdateForm();"></input></p>
+				</form>
+			</div>
+	</div>
+	  
+	<div id="group-update-form" style="display: none">
+		<div class="overlay"></div>
+			<div class="modal" style="transform: translate(-350px, -86px);"> <!-- TODO: set form position via JS -->
+				<form>
+				<input type="hidden" name="groupID" id="groupID" value="0"></input>
+				<p><b id="group-update-form-caption">Editing group</b></p>
+				<p><div class="field-caption">Name:</div><input type="text" size="80" value="" id="groupName"></input></p>
+				<div style="display: none;" id="group-error-message"></div>
+				<p><input type="button" value="Update & Close" onclick="updateGroupAndClose();"></input> <input type="button" value="Cancel" onclick="hideGroupUpdateForm();"></input></p>
+				</form>
+			</div>
+	</div>
+
+	<table width="100%" cellspacing="0" cellpadding="0" style="padding: 0; margin: 0; border=none">
+		<tr>
+			<td style="padding-left: 20px;">
+				<img src="/img/logo.png" style="margin-top: 8px; margin-bottom: 8px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="padding: 5px; padding-left: 24px; background: #aaaaaa; color:white;">
+				L1 maps
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color: #efefef; padding: 10px; padding-left: 21px;" colspan="2">
+				<table id='read-mode-button'><tr><td><a href='' onclick="return toggleEditMode();"><svg height=16 width=16 style='padding-top: 1px;'><image xlink:href="/img/locked.svg" width=16 height=16></image></svg></a></td><td>&nbsp;Read mode</td></tr></table>
+				<table id='edit-mode-button' style='display: none;'><tr><td><a href='' onclick="return toggleReadMode();"><svg height=16 width=16 style='padding-top: 1px;'><image xlink:href="/img/unlocked.svg" width=16 height=16></image></svg></a></td><td>&nbsp;Edit mode</td></tr></table>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" width="99%" style="padding: 22px;">
+				<div id="maps-list"></div>
+			</td>
+		</tr>
+	</table>
 </div>
 
-<div id="map-update-form" style="display: none">
-	<div class="overlay"></div>
-		<div class="modal" style="transform: translate(-350px, -208px);"> <!-- TODO: set form position via JS -->
-			<form>
-			<input type="hidden" name="mapID" id="mapID" value="0"></input>
-			<p><b id="map-update-form-caption">Editing map</b></p>
-			<p><div class="field-caption">Group:</div>
-				<select id="mapGroup">
-				</select>
-			</p>
-			<p><div class="field-caption">Name:</div><input type="text" size="80" value="" id="mapName"></input></p>
-			<p><div class="field-caption">Scheme:</div><textarea cols="80" rows="10" id="mapScheme"></textarea></p>
-			<div style="display: none;" id="map-error-message"></div>
-			<p><input type="button" value="Update & Close" onclick="updateMapAndClose();"></input> <input type="button" value="Update" id="update-button" onclick="updateMap();"></input> <input type="button" value="Cancel" onclick="hideMapUpdateForm();"></input></p>
-			</form>
-		</div>
-</div>
-  
-<div id="group-update-form" style="display: none">
-	<div class="overlay"></div>
-		<div class="modal" style="transform: translate(-350px, -86px);"> <!-- TODO: set form position via JS -->
-			<form>
-			<input type="hidden" name="groupID" id="groupID" value="0"></input>
-			<p><b id="group-update-form-caption">Editing group</b></p>
-			<p><div class="field-caption">Name:</div><input type="text" size="80" value="" id="groupName"></input></p>
-			<div style="display: none;" id="group-error-message"></div>
-			<p><input type="button" value="Update & Close" onclick="updateGroupAndClose();"></input> <input type="button" value="Cancel" onclick="hideGroupUpdateForm();"></input></p>
-			</form>
-		</div>
-</div>
+<footer>
+	<table width="100%">
+		<tr>
+			<td style="padding: 10px; padding-left: 21px;" class="secondary_text">v0.3.1</td>
+			<td style="padding: 10px; padding-right: 21px; text-align: right;" class="secondary_text"><a href="https://github.com/den-it/ntmap/blob/master/docs/index.md">Docs</a></td>
+		</tr>
+	</table>
+</footer>
 
-<table width="100%" cellspacing="0" cellpadding="0" style="padding: 0; margin: 0; border=none">
-	<tr>
-		<td style="padding-left: 20px;">
-			<img src="/img/logo.png" style="margin-top: 8px; margin-bottom: 8px;"/>
-		</td>
-	</tr>
-	<tr>
-		<td style="padding: 5px; padding-left: 24px; background: #aaaaaa; color:white;">
-			L1 maps
-		</td>
-	</tr>
-	<tr>
-		<td style="background-color: #efefef; padding: 10px; padding-left: 21px;" colspan="2">
-			<table id='read-mode-button'><tr><td><a href='' onclick="return toggleEditMode();"><svg height=16 width=16 style='padding-top: 1px;'><image xlink:href="/img/locked.svg" width=16 height=16></image></svg></a></td><td>&nbsp;Read mode</td></tr></table>
-			<table id='edit-mode-button' style='display: none;'><tr><td><a href='' onclick="return toggleReadMode();"><svg height=16 width=16 style='padding-top: 1px;'><image xlink:href="/img/unlocked.svg" width=16 height=16></image></svg></a></td><td>&nbsp;Edit mode</td></tr></table>
-		</td>
-	</tr>
-	<tr>
-		<td valign="top" width="99%" style="padding: 22px;">
-			<div id="maps-list"></div>
-		</td>
-	</tr>
-</table>
 </body>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>

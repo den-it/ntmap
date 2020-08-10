@@ -27,12 +27,12 @@ function OnClickDetails(device, interfaces) {
 	
 	if (device.thisIsCollapsedVC) {
 		for (i in device.nodes) {
-			text += "<p style='margin-top: 0; margin-bottom: 0.2em;'>" + device.nodes[i].model + "<br/>";
+			text += "<p style='margin-top: 0; margin-bottom: 0.2em;'>" + device.nodes[i].manufacturer + " " + device.nodes[i].model + "<br/>";
 			text += "<span class='secondary_text'>" + device.nodes[i].serial + "</span></p>";
 		}
 	}
 	else {
-		text += "<p style='margin-top: 0;'>" + device.model + "<br/>";
+		text += "<p style='margin-top: 0;'>" + device.manufacturer + " "  + device.model + "<br/>";
 		text += "<span class='secondary_text'>" + device.serial + "</span></p>";
 	}
 	
@@ -276,7 +276,7 @@ function drawL1Map(hide_virt_chassis, show_prod_links) {
 						vcDict[graph.nodes[i].virtual_chassis].leftGroup = graph.nodes[i].group;
 				}
 				
-				var nodeInfo = {"serial": graph.nodes[i].serial, "model": graph.nodes[i].model};
+				var nodeInfo = { "serial": graph.nodes[i].serial, "manufacturer": graph.nodes[i].manufacturer, "model": graph.nodes[i].model };
 				vcDict[graph.nodes[i].virtual_chassis].nodes.push(nodeInfo);
 				
 				// find all links of this node and change names of A and Z point in them
@@ -389,6 +389,7 @@ function drawL1Map(hide_virt_chassis, show_prod_links) {
 		if (vcDict[graph.nodes[i].id]) {
 			graph.nodes[i].serial = "";
 			graph.nodes[i].model = "";
+			graph.nodes[i].manufacturer = "";
 			graph.nodes[i].nodes = vcDict[graph.nodes[i].id].nodes;
 		}
 		
