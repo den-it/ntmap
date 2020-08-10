@@ -5,134 +5,144 @@
 
 <body>
 
-<table width="100%" cellspacing="0" cellpadding="0" style="padding: 0; margin: 0; border1=none">
-	<tr>
-		<td style="padding-left: 20px;">
-			<img src="/img/logo.png" style="margin-top: 8px; margin-bottom: 8px;"/>
-		</td>
-	</tr>
-	<tr>
-		<td style="padding: 5px; padding-left: 24px; background: #aaaaaa; color:white;" colspan="2">
-			<a href="/" style="color:white;">L1 maps</a>&nbsp;&nbsp;<span style="opacity:0.7">></span>&nbsp;&nbsp;<span id="crumbs_last_element"></span>
-		</td>
-	</tr>
-	<tr>
-		<td style="background-color: #efefef; padding: 10px; padding-left: 21px;" colspan="2">
-			<table>
-				<tr>
-					<!--<td valign=top style="padding-top:6px">&#x2190; <a href="/">Back to list</a></td>
-					<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>-->
-					<!--<td valign=top style="padding-top:6px">Virtual chassis:</td>-->
-					<!--<td valign="top">
-						<table>
-							<tr><td><input type="radio" name="hide_clients_radio" value="1" onclick="drawL1Map(1);" checked="checked" /></td><td>collapse</td></tr>
-							<tr><td><input type="radio" name="hide_clients_radio" value="0" onclick="drawL1Map(0);"/></td><td>expand</td></tr>
-						</table>
-					</td>-->
-					<td valign=top style="padding-top:6px">Links:</td>
-					<td valign="top">
-						<table>
-							<tr><td><input type="radio" name="radio_links_mode" value="0" onclick="drawL1Map(1, 1);" checked="checked" /></td><td>production</td></tr>
-							<tr><td><input type="radio" name="radio_links_mode" value="1" onclick="drawL1Map(1, 0);"/></td><td>management</td></tr>
-						</table>
-					</td>
-					<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>
-					<td valign=top style="padding-top:6px">Legend:</td>
-					<td valign="top">
-						<table>
-							<tr><td><input type="radio" name="legend_radio" value="1" onclick="document.getElementById('legend').style.display='none';" checked="checked" /></td><td>hide</td></tr>
-							<tr><td><input type="radio" name="legend_radio" value="0" onclick="document.getElementById('legend').style.display='block';"/></td><td>show</td></tr>
-						</table>
-					</td>
-					<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>
-					<td valign="top" style="padding-top:3px;">
-						<table margin=0 padding=0>
-							<tr>
-								<td><a href="" id="svg_download_link" style="display: none;">Download as SVG</a><div id="svg_download_link_placeholder" style="display: inline;">Download as SVG</div></td>
-								<td width="2"></td>
-								<td class="secondary_text">Right click, and choose "Save as..."</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td></td>
-								<td class="secondary_text">You can then open SVG fies by any vector graphics editor</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
+<div class="wrapper">
+	<table width="100%" cellspacing="0" cellpadding="0" style="padding: 0; margin: 0;">
+		<tr>
+			<td style="padding-left: 20px;">
+				<img src="/img/logo.png" style="margin-top: 8px; margin-bottom: 8px;"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="padding: 5px; padding-left: 24px; background: #aaaaaa; color:white;">
+				<a href="/" style="color:white;">L1 maps</a>&nbsp;&nbsp;<span style="opacity:0.7">></span>&nbsp;&nbsp;<span id="crumbs_last_element"></span>
+			</td>
+		</tr>
+		<tr>
+			<td style="background-color: #efefef; padding: 10px; padding-left: 21px;">
+				<table>
+					<tr>
+						<!--<td valign=top style="padding-top:6px">&#x2190; <a href="/">Back to list</a></td>
+						<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>-->
+						<!--<td valign=top style="padding-top:6px">Virtual chassis:</td>-->
+						<!--<td valign="top">
+							<table>
+								<tr><td><input type="radio" name="hide_clients_radio" value="1" onclick="drawL1Map(1);" checked="checked" /></td><td>collapse</td></tr>
+								<tr><td><input type="radio" name="hide_clients_radio" value="0" onclick="drawL1Map(0);"/></td><td>expand</td></tr>
+							</table>
+						</td>-->
+						<td valign=top style="padding-top:6px">Links:</td>
+						<td valign="top">
+							<table>
+								<tr><td><input type="radio" name="radio_links_mode" value="0" onclick="drawL1Map(1, 1);" checked="checked" /></td><td>production</td></tr>
+								<tr><td><input type="radio" name="radio_links_mode" value="1" onclick="drawL1Map(1, 0);"/></td><td>management</td></tr>
+							</table>
+						</td>
+						<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>
+						<td valign=top style="padding-top:6px">Legend:</td>
+						<td valign="top">
+							<table>
+								<tr><td><input type="radio" name="legend_radio" value="1" onclick="document.getElementById('legend').style.display='none';" checked="checked" /></td><td>hide</td></tr>
+								<tr><td><input type="radio" name="legend_radio" value="0" onclick="document.getElementById('legend').style.display='block';"/></td><td>show</td></tr>
+							</table>
+						</td>
+						<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>
+						<td valign="top" style="padding-top:3px;">
+							<table margin=0 padding=0>
+								<tr>
+									<td><a href="" id="svg_download_link" style="display: none;">Download as SVG</a><div id="svg_download_link_placeholder" style="display: inline;">Download as SVG</div></td>
+									<td width="2"></td>
+									<td class="secondary_text">Right click, and choose "Save as..."</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td class="secondary_text">You can then open SVG fies by any vector graphics editor</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
 
-			</table>
-			
-						<svg height="200" width="800" id="legend" style="margin-top: 20px; display:none;">
-							<rect x="0" y="0" width="799" height="199" style="fill:white; stroke:#999999;"></rect>
-						<g transform="translate(20, 20)">
-							<text x="0" y="10" class="secondary_text">Physical links:</text>
-							<g transform="translate(0, 40)">
-								<line class="link100gb" stroke-width="5" x1="0" y1="5" x2="40" y2="5"></line>
-								<text x="50" y="10">100 Gigabit/sec</text>
-								<line class="link40gb" stroke-width="3.16" x1="0" y1="25" x2="40" y2="25"></line>
-								<text x="50" y="30">40 Gigabit/sec</text>
-								<line class="link25gb" stroke-width="2.5" x1="0" y1="45" x2="40" y2="45"></line>
-								<text x="50" y="50">25 Gigabit/sec</text>
-								<line class="link10gb" stroke-width="1.58" x1="0" y1="65" x2="40" y2="65"></line>
-								<text x="50" y="70">10 Gigabit/sec</text>
-								<line class="link1gb" stroke-width="0.5" x1="0" y1="85" x2="40" y2="85"></line>
-								<text x="50" y="90">1 Gigabit/sec</text>
-								<circle class="link10gb-label-circle" r="7" cx="21" cy="105"></circle>
-								<g class="labels"><text dy="3" x="18" y="105">2</text></g>
-								<text x="51" y="110">Number of links</text>
-							</g>
-							
-							<text x="196" y="10" class="secondary_text">Cluster</text>
-							<text x="196" y="28" class="secondary_text">(separate control planes):</text>
-							
-							<g transform="translate(0, 20)">
-								<text x="200" y="31" style="font-weight: bold;">dc2-ext-fw01</text>
-								<image xlink:href="/img/firewall.svg" width="32" height="32" x="200" y="40"></image>
-								<text x="240" y="60">node01</text>
-								<image xlink:href="/img/firewall.svg" width="32" height="32" x="200" y="100"></image>
-								<text x="240" y="120">node02</text>
-								<rect x="196" y="36" height="100" width="40" class="clusters"/>
-							</g>
+				</table>
+				
+							<svg height="200" width="800" id="legend" style="margin-top: 20px; display:none;">
+								<rect x="0" y="0" width="799" height="199" style="fill:white; stroke:#999999;"></rect>
+							<g transform="translate(20, 20)">
+								<text x="0" y="10" class="secondary_text">Physical links:</text>
+								<g transform="translate(0, 40)">
+									<line class="link100gb" stroke-width="5" x1="0" y1="5" x2="40" y2="5"></line>
+									<text x="50" y="10">100 Gigabit/sec</text>
+									<line class="link40gb" stroke-width="3.16" x1="0" y1="25" x2="40" y2="25"></line>
+									<text x="50" y="30">40 Gigabit/sec</text>
+									<line class="link25gb" stroke-width="2.5" x1="0" y1="45" x2="40" y2="45"></line>
+									<text x="50" y="50">25 Gigabit/sec</text>
+									<line class="link10gb" stroke-width="1.58" x1="0" y1="65" x2="40" y2="65"></line>
+									<text x="50" y="70">10 Gigabit/sec</text>
+									<line class="link1gb" stroke-width="0.5" x1="0" y1="85" x2="40" y2="85"></line>
+									<text x="50" y="90">1 Gigabit/sec</text>
+									<circle class="link10gb-label-circle" r="7" cx="21" cy="105"></circle>
+									<g class="labels"><text dy="3" x="18" y="105">2</text></g>
+									<text x="51" y="110">Number of links</text>
+								</g>
+								
+								<text x="196" y="10" class="secondary_text">Cluster</text>
+								<text x="196" y="28" class="secondary_text">(separate control planes):</text>
+								
+								<g transform="translate(0, 20)">
+									<text x="200" y="31" style="font-weight: bold;">dc2-ext-fw01</text>
+									<image xlink:href="/img/firewall.svg" width="32" height="32" x="200" y="40"></image>
+									<text x="240" y="60">node01</text>
+									<image xlink:href="/img/firewall.svg" width="32" height="32" x="200" y="100"></image>
+									<text x="240" y="120">node02</text>
+									<rect x="196" y="36" height="100" width="40" class="clusters"/>
+								</g>
 
-							<text x="396" y="10" class="secondary_text">Virtual chassis</text>
-							<text x="396" y="28" class="secondary_text">(one control plane):</text>
-							<g transform="translate(0, 20)">
-								<text x="400" y="31" style="font-weight: bold;">dc2-core-sw01</text>
-								<image xlink:href="/img/coreswitch.svg" width="32" height="32" x="400" y="40"></image>
-								<text x="440" y="60">node01</text>
-								<image xlink:href="/img/coreswitch.svg" width="32" height="32" x="400" y="100"></image>
-								<text x="440" y="120">node02</text>
-								<rect x="396" y="36" height="100" width="40" class="VCs"/>
+								<text x="396" y="10" class="secondary_text">Virtual chassis</text>
+								<text x="396" y="28" class="secondary_text">(one control plane):</text>
+								<g transform="translate(0, 20)">
+									<text x="400" y="31" style="font-weight: bold;">dc2-core-sw01</text>
+									<image xlink:href="/img/coreswitch.svg" width="32" height="32" x="400" y="40"></image>
+									<text x="440" y="60">node01</text>
+									<image xlink:href="/img/coreswitch.svg" width="32" height="32" x="400" y="100"></image>
+									<text x="440" y="120">node02</text>
+									<rect x="396" y="36" height="100" width="40" class="VCs"/>
+								</g>
+								
+								<text x="596" y="10" class="secondary_text">Virtual chassis</text>
+								<text x="596" y="28" class="secondary_text">(in collapsed mode):</text>
+								<image xlink:href="/img/switch.svg" width="32" height="32" x="600" y="40"></image>
+								<text x="640" y="60" style="font-weight: bold;">dc2-core-sw01</text>
+								<image xlink:href="/img/vc.svg" width="16" height="16" x="624" y="32"></image>
+								
+								<g transform="translate(0, 100)">
+									<text x="596" y="10" class="secondary_text">Standalone node:</text>
+									<text x="596" y="28" class="secondary_text"></text>
+									<image xlink:href="/img/switch.svg" width="32" height="32" x="600" y="20"></image>
+									<text x="640" y="40">dc2-core-sw01</text>
+								</g>
 							</g>
+							</svg>
 							
-							<text x="596" y="10" class="secondary_text">Virtual chassis</text>
-							<text x="596" y="28" class="secondary_text">(in collapsed mode):</text>
-							<image xlink:href="/img/switch.svg" width="32" height="32" x="600" y="40"></image>
-							<text x="640" y="60" style="font-weight: bold;">dc2-core-sw01</text>
-							<image xlink:href="/img/vc.svg" width="16" height="16" x="624" y="32"></image>
-							
-							<g transform="translate(0, 100)">
-								<text x="596" y="10" class="secondary_text">Standalone node:</text>
-								<text x="596" y="28" class="secondary_text"></text>
-								<image xlink:href="/img/switch.svg" width="32" height="32" x="600" y="20"></image>
-								<text x="640" y="40">dc2-core-sw01</text>
-							</g>
-						</g>
-						</svg>
-						
-		</td>
-	</tr>
-	<tr>
-		<td valign="top" width="99%" style="position: relative;">
-			<div id="progressbar" style="margin:22px;"><table><tr><td valign="top">Loading</td><td>&nbsp;</td><td><img src="/img/bx_loader.gif" height=16 width=16/></td></tr></table></div>
-			<p id="error-message" style="color: red; padding: 22px; display: none;"></p>
-			<svg width="100%" height="100%" id="svg1" onClick="hideInfobox();"></svg>
-			<div class="infobox" id="infobox" style="display: none;"></div>
-		</td>
-	</tr>
-</table>
-</body>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top" width="99%" style="position: relative;">
+				<div id="progressbar" style="margin:22px;"><table><tr><td valign="top">Loading</td><td>&nbsp;</td><td><img src="/img/bx_loader.gif" height=16 width=16/></td></tr></table></div>
+				<p id="error-message" style="color: red; padding: 22px; display: none;"></p>
+				<svg width="100%" height="100%" id="svg1" onClick="hideInfobox();"></svg>
+				<div class="infobox" id="infobox" style="display: none;"></div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<footer>
+	<table width="100%">
+		<tr>
+			<td style="padding: 10px; padding-left: 21px;" class="secondary_text">v0.3.1</td>
+			<td style="padding: 10px; padding-right: 21px; text-align: right;" class="secondary_text"><a href="https://github.com/den-it/ntmap/blob/master/docs/index.md">Docs</a></td>
+		</tr>
+	</table>
+</footer>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>

@@ -1,9 +1,24 @@
 /* Common styles */
 /***********************************************************************************/
+html {
+	height: 100%;
+}
+
 body {
 	font-family: Arial, Helvetica, sans-serif;
 	margin: 0px;
 	font-size: 14px;
+	height: 100%;
+}
+
+.wrapper {
+    min-height: calc(100% - 40px);
+}
+
+/* TODO: stretch to content width, not screen width */
+footer {
+	background-color: #efefef;
+    height: 40px;
 }
 
 a:link {
