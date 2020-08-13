@@ -9,7 +9,7 @@
 	<table width="100%" cellspacing="0" cellpadding="0" style="padding: 0; margin: 0;">
 		<tr>
 			<td style="padding-left: 20px;">
-				<img src="/img/logo.png" style="margin-top: 8px; margin-bottom: 8px;"/>
+				<a href="/"><img src="/img/logo.png" style="margin-top: 8px; margin-bottom: 8px;" border="0"/></a>
 			</td>
 		</tr>
 		<tr>
@@ -23,18 +23,19 @@
 					<tr>
 						<!--<td valign=top style="padding-top:6px">&#x2190; <a href="/">Back to list</a></td>
 						<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>-->
-						<!--<td valign=top style="padding-top:6px">Virtual chassis:</td>-->
-						<!--<td valign="top">
-							<table>
-								<tr><td><input type="radio" name="hide_clients_radio" value="1" onclick="drawL1Map(1);" checked="checked" /></td><td>collapse</td></tr>
-								<tr><td><input type="radio" name="hide_clients_radio" value="0" onclick="drawL1Map(0);"/></td><td>expand</td></tr>
-							</table>
-						</td>-->
 						<td valign=top style="padding-top:6px">Links:</td>
 						<td valign="top">
 							<table>
-								<tr><td><input type="radio" name="radio_links_mode" value="0" onclick="drawL1Map(1, 1);" checked="checked" /></td><td>production</td></tr>
-								<tr><td><input type="radio" name="radio_links_mode" value="1" onclick="drawL1Map(1, 0);"/></td><td>management</td></tr>
+								<tr><td><input type="radio" name="radio_prod_links_mode" value="1" onclick="drawL1Map();" checked="checked" /></td><td>production</td></tr>
+								<tr><td><input type="radio" name="radio_prod_links_mode" value="0" onclick="drawL1Map();"/></td><td>OOB management</td></tr>
+							</table>
+						</td>
+						<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>
+						<td valign=top style="padding-top:6px">Virtual chassis:</td>
+						<td valign="top">
+							<table>
+								<tr><td><input type="radio" name="radio_expand_vc_mode" value="0" onclick="drawL1Map();" checked="checked" /></td><td>collapse</td></tr>
+								<tr><td><input type="radio" name="radio_expand_vc_mode" value="1" onclick="drawL1Map();"/></td><td>expand</td></tr>
 							</table>
 						</td>
 						<td width="16"></td><td width="20"><div class="div-vert-line-80"/></td>
@@ -117,7 +118,7 @@
 									<text x="596" y="10" class="secondary_text">Standalone node:</text>
 									<text x="596" y="28" class="secondary_text"></text>
 									<image xlink:href="/img/switch.svg" width="32" height="32" x="600" y="20"></image>
-									<text x="640" y="40">dc2-core-sw01</text>
+									<text x="640" y="40">dc2-leaf-sw01</text>
 								</g>
 							</g>
 							</svg>
@@ -136,10 +137,11 @@
 </div>
 
 <footer>
-	<table width="100%">
+	<div style="height: 1px; background: #aaaaaa;"></div>
+	<table style="width: 100%; height: calc(100% - 1px);">
 		<tr>
-			<td style="padding: 10px; padding-left: 21px;" class="secondary_text">v0.3.1</td>
-			<td style="padding: 10px; padding-right: 21px; text-align: right;" class="secondary_text"><a href="https://github.com/den-it/ntmap/blob/master/docs/index.md">Docs</a></td>
+			<td style="padding-left: 21px;" class="secondary_text">v0.3.2</td>
+			<td style="padding-right: 21px; text-align: right;" class="secondary_text"><a href="https://github.com/den-it/ntmap/blob/master/docs/index.md">Docs</a></td>
 		</tr>
 	</table>
 </footer>
