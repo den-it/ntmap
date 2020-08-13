@@ -281,6 +281,7 @@ def getMap(id):
                                 d.id AS netbox_id,
                                 d.serial AS serial,
                                 vc.domain AS virtual_chassis,
+                                vc.master_id AS virtual_chassis_master_netbox_id,
                                 c.name AS cluster,
                                 r.name AS type,
                                 t.model AS model,
@@ -441,29 +442,31 @@ def getMap(id):
                     })
 
     for node in graphJson["results"]["nodes"]:
-        if not (node["cluster"]):
+        if not node["cluster"]:
             node.pop("cluster", None)
-        if not (node["virtual_chassis"]):
+        if not node["virtual_chassis"]:
             node.pop("virtual_chassis", None)
+        if not node["virtual_chassis_master_netbox_id"]:
+            node.pop("virtual_chassis_master_netbox_id")
 
     for node in graphJson["results"]["interfaces"]:
         for interface in graphJson["results"]["interfaces"][node]:
-            if not (interface["lag"]):
+            if not interface["lag"]:
                 interface.pop("lag", None)
                 interface.pop("lag_netbox_id", None)
 
-            if not (interface["neighbor"]):
+            if not interface["neighbor"]:
                 interface.pop("neighbor", None)
                 interface.pop("neighbor_interface", None)
                 interface.pop("neighbor_interface_netbox_id", None)
                 interface.pop("neighbor_netbox_id", None)
 
     for i, value in enumerate(graphJson["results"]["links"]):
-        if (graphJson["results"]["links"][i]["quantity"] > 1):
+        if graphJson["results"]["links"][i]["quantity"] > 1:
             graphJson["results"]["links"][i]["quantity"] = int(graphJson["results"]["links"][i]["quantity"] / 2)
 
     for i, value in enumerate(graphJson["results"]["mng_links"]):
-        if (graphJson["results"]["mng_links"][i]["quantity"] > 1):
+        if graphJson["results"]["mng_links"][i]["quantity"] > 1:
             graphJson["results"]["mng_links"][i]["quantity"] = int(graphJson["results"]["mng_links"][i]["quantity"] / 2)
 
     graphJson["result"] = "success"

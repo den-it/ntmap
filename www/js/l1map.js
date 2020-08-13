@@ -221,7 +221,18 @@ function getL1Map() {
 }
 
 
-function drawL1Map(hide_virt_chassis, show_prod_links) {
+function drawL1Map() {
+	// select display mode based on the position of radio buttons
+	if (document.querySelector('input[name="radio_prod_links_mode"]:checked').value == 1)
+		prodLinksMode = true;
+	else
+		prodLinksMode = false;
+
+	if (document.querySelector('input[name="radio_expand_vc_mode"]:checked').value == 1)
+		expandVirtChassisMode = true;
+	else
+		expandVirtChassisMode = false;
+	
 	if (!globalGraph.nodes) 
 		return false;
 	
@@ -230,8 +241,8 @@ function drawL1Map(hide_virt_chassis, show_prod_links) {
 		globalSimulation.stop();
 		
 	var graph = {};
-	Object.assign(graph, globalGraph);
-	
+	var graph = JSON.parse(JSON.stringify(globalGraph)); // TODO: check if this works fine for big data structures
+
 	// initial svg height & width. Will be corrected later according to the number of elements on L1-map
 	var svgHeight = 0; 
 	var svgWidth  = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - 20;
@@ -243,7 +254,7 @@ function drawL1Map(hide_virt_chassis, show_prod_links) {
 		// if (error) throw error;
 	// graph = test_graph.results;
 	
-	if (!show_prod_links)
+	if (!prodLinksMode)
 		graph.links = graph.mng_links;
 	
 	var vcDict = {};
@@ -251,7 +262,7 @@ function drawL1Map(hide_virt_chassis, show_prod_links) {
 	
 	// Collapse virtual chassis to one node with comprising important properties of all members of VC 
 	// Example: all links beloning to each member should now belong to the node wich represents the whole VC
-	if (hide_virt_chassis) {
+	if (!expandVirtChassisMode) { 
 		// Collapse virtual chassis, i.e. throw out all nodes in each VC except for one
 		for (i in graph.nodes) {
 			if (graph.nodes[i].hasOwnProperty("virtual_chassis") && graph.nodes[i].virtual_chassis) { // This is a VC node. It shouldn't be added to nodes list. Instead a VC node should be generated
@@ -325,10 +336,6 @@ function drawL1Map(hide_virt_chassis, show_prod_links) {
 			}
 		}
 		
-		//console.log(vcDict);
-		//console.log(nodesList);
-		//console.log(linksList);
-
 		graph.nodes = nodesList;
 		graph.links = linksList;
 	}
@@ -421,7 +428,7 @@ function drawL1Map(hide_virt_chassis, show_prod_links) {
 		//graph.nodes[i].fx=1;
 		graph.nodes[i].fx =  graph.nodes[i].group * svgWidth / groupsArray.length - 60;
 	}
-
+	
 	var svg = d3.select("svg[id='svg1']");
 	svg
 		.selectAll("g").remove(); // clear previous chart if any
