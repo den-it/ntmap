@@ -21,7 +21,10 @@ function OnClickDetails(device, interfaces) {
 		
 	text  = "<img src='/img/pixel.png' width='600' height='1'/>";
 	text += "<table width='100%'><tr><td>";
-	text += "<h3 style='margin-bottom: 0.5em; margin-top: 1em;'><a target='_blank' href='" + NETBOX_URL + "/dcim/devices/" + device.netbox_id + "/'>";
+	if (device.thisIsCollapsedVC)
+		text += "<h3 style='margin-bottom: 0.5em; margin-top: 1em;'><a target='_blank' href='" + NETBOX_URL + "/dcim/virtual-chassis/" + device.netbox_id + "/'>";
+	else
+		text += "<h3 style='margin-bottom: 0.5em; margin-top: 1em;'><a target='_blank' href='" + NETBOX_URL + "/dcim/devices/" + device.netbox_id + "/'>";
 	text += device.id + "</a></h3>";
 	text += "</td><td valign='top' align='right'><a href='#' onclick='hideInfobox(); return false;'><img src='/img/close.svg' width='16' height='16' style='margin-top: 1.2em;'></a></td></tr></table>";
 	
@@ -265,30 +268,34 @@ function drawL1Map() {
 	if (!expandVirtChassisMode) { 
 		// Collapse virtual chassis, i.e. throw out all nodes in each VC except for one
 		for (i in graph.nodes) {
-			if (graph.nodes[i].hasOwnProperty("virtual_chassis") && graph.nodes[i].virtual_chassis) { // This is a VC node. It shouldn't be added to nodes list. Instead a VC node should be generated
+			if (graph.nodes[i].hasOwnProperty("virtual_chassis_id") && graph.nodes[i].virtual_chassis_id) { // This is a VC node. It shouldn't be added to nodes list. Instead a VC node should be generated
 				
-				// if vcDict doesn't have this node, add it to vcDict
-				if (!vcDict[graph.nodes[i].virtual_chassis]) {
-					vcDict[graph.nodes[i].virtual_chassis] = {"leftGroup": graph.nodes[i].group, "nodes": [] };
+				// if vcDict doesn't have this VC, add it to vcDict
+				if (!vcDict[graph.nodes[i].virtual_chassis_id]) {
+					vcDict[graph.nodes[i].virtual_chassis_id] = {"leftGroup": graph.nodes[i].group, "nodes": [] };
 					
 					// add this node to new nodesList with the name of VC
 					firstNodeOfVC = Object.assign({}, graph.nodes[i]);
 					firstNodeOfVC.id = graph.nodes[i].virtual_chassis;
-					firstNodeOfVC.netbox_id = graph.nodes[i].virtual_chassis_master_netbox_id;
+					firstNodeOfVC.netbox_id = graph.nodes[i].virtual_chassis_id;
+					firstNodeOfVC.serial = "";
+					firstNodeOfVC.model = "";
+					firstNodeOfVC.manufacturer = "";
 					firstNodeOfVC.thisIsCollapsedVC = true;
 					delete firstNodeOfVC["virtual_chassis"];
-					delete firstNodeOfVC["virtual_chassis_master_netbox_id"];
+					delete firstNodeOfVC["virtual_chassis_id"];
 
 					nodesList.push(firstNodeOfVC);
 				}
 				else { // node is in the vcDict
-					// select left group of VC
-					if (graph.nodes[i].group < vcDict[graph.nodes[i].virtual_chassis]["leftGroup"]) 
-						vcDict[graph.nodes[i].virtual_chassis].leftGroup = graph.nodes[i].group;
+					// select left group of VC. That will display the collapsed-VC-node in the very left group
+					if (graph.nodes[i].group < vcDict[graph.nodes[i].virtual_chassis_id]["leftGroup"]) 
+						vcDict[graph.nodes[i].virtual_chassis_id].leftGroup = graph.nodes[i].group;
 				}
+
 				
 				var nodeInfo = { "serial": graph.nodes[i].serial, "manufacturer": graph.nodes[i].manufacturer, "model": graph.nodes[i].model };
-				vcDict[graph.nodes[i].virtual_chassis].nodes.push(nodeInfo);
+				vcDict[graph.nodes[i].virtual_chassis_id].nodes.push(nodeInfo);
 				
 				// find all links of this node and change names of A and Z point in them
 				for (j in graph.links) {
@@ -313,10 +320,15 @@ function drawL1Map() {
 				nodesList.push(graph.nodes[i]);
 
 		}
-		
+
+		// set serial and model for collapsed VC node to be the list of all VC members serials and models to be displayed in infobox
+		for (i in nodesList) 
+			if (nodesList[i].hasOwnProperty("thisIsCollapsedVC") && vcDict[nodesList[i].netbox_id]) 
+				nodesList[i].nodes = vcDict[nodesList[i].netbox_id].nodes;
+
 		// for each link 
 		//		find all links of this node leading to virtual_chassis members and delete them
-		// find all links with the same A and Z and sum amount of the	var linksList = new Array();
+		// find all links with the same A and Z and sum amount of them
 		var linksList = new Array();
 		
 		for (i in graph.links) {
@@ -344,7 +356,6 @@ function drawL1Map() {
 	
 	// From the list of nodes fill clustersArray = {id (human-readable name), nodes_amount (number of nodes in cluster)}, {}, {}... 
 	// From the list of nodes fill vcArray = [numOfElmentsInGroup1, numOfElmentsInGroup2... etc]
-	// From vcDict change the node's group to the leftGroup of VC. That will display the collapsed VC-node in the very left group
 	// From the list of nodes fill groupsArray = [numOfElmentsInGroup1, numOfElmentsInGroup2... etc]
 	var clustersArray = new Array();
 	var vcArray = new Array();
@@ -370,7 +381,7 @@ function drawL1Map() {
 				clustersArray[nodeParentCluster].nodes_amount++;
 		}
 
-		// fill vcArray
+		// fill vcArray (applicable for VC expand mode)
 		if (graph.nodes[i].hasOwnProperty("virtual_chassis") && graph.nodes[i].virtual_chassis) {
 			var parentVC = -1;
 			
@@ -388,18 +399,6 @@ function drawL1Map() {
 				vcArray[parentVC].nodes_amount++;
 		}
 		
-		// choose left group for collapsed VC node
-		if (vcDict[graph.nodes[i].id] && vcDict[graph.nodes[i].id]["leftGroup"] < graph.nodes[i].group)
-			graph.nodes[i].group = vcDict[graph.nodes[i].id]["leftGroup"];
-			
-		// set serial and model for collapsed VC node to be the list of all VC members serials and models
-		if (vcDict[graph.nodes[i].id]) {
-			graph.nodes[i].serial = "";
-			graph.nodes[i].model = "";
-			graph.nodes[i].manufacturer = "";
-			graph.nodes[i].nodes = vcDict[graph.nodes[i].id].nodes;
-		}
-		
 		// fill groupsArray
 		if (!groupsArray[graph.nodes[i].group])
 			groupsArray[graph.nodes[i].group] = 1;
@@ -413,6 +412,7 @@ function drawL1Map() {
 		// calculate position of node in the group (will be used to determine node's Y coordinate)
 		graph.nodes[i].positionInGroup = groupsArray[graph.nodes[i].group];
 	}
+
 
 	// Calculate the height and width of SVG
 	svgComfortableHeight = nodesInLargestGroup * COLLISION_RADIUS * 2 + 100; // + 40;
