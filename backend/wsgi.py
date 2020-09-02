@@ -280,8 +280,9 @@ def getMap(id):
                                 d.name AS id,
                                 d.id AS netbox_id,
                                 d.serial AS serial,
-                                vc.domain AS virtual_chassis,
-                                vc.master_id AS virtual_chassis_master_netbox_id,
+                                vc.name AS virtual_chassis,
+                                vc.id AS virtual_chassis_netbox_id,
+                                d.vc_position AS position_in_vc,
                                 c.name AS cluster,
                                 r.name AS type,
                                 t.model AS model,
@@ -338,11 +339,11 @@ def getMap(id):
                             i.mgmt_only AS mgmt_only,
                             i.lag_id AS lag_netbox_id,
                             l.name AS lag,
-                            i.form_factor AS form_factor,
+                            i.type AS type,
                             i.description AS description,
                             i._connected_interface_id AS neighbor_interface_netbox_id,
                             ni.name AS neighbor_interface,
-                            ni.form_factor AS neighbor_interface_form_factor,
+                            ni.type AS neighbor_interface_type,
                             ni.mgmt_only AS neighbor_interface_mgmt_only,
                             nd.id AS neighbor_netbox_id,
                             nd.name AS neighbor
@@ -361,7 +362,6 @@ def getMap(id):
                             dcim_device nd
                             ON ni.device_id = nd.id
                         WHERE
-                            i.type = 'physical' AND
                             i.device_id={}
                         ORDER BY name;""".format(node["netbox_id"])
             
@@ -374,8 +374,8 @@ def getMap(id):
             nodeInterfaces.sort(key=cmp_to_key(interfaceComparator))
             
             for interface in nodeInterfaces:
-                interface["speed"] = getLinkSpeedOutOfFormFactor(interface["form_factor"])
-                interface["neighbor_interface_speed"] = getLinkSpeedOutOfFormFactor(interface["neighbor_interface_form_factor"])
+                interface["speed"] = getLinkSpeedOutOfFormFactor(interface["type"])
+                interface["neighbor_interface_speed"] = getLinkSpeedOutOfFormFactor(interface["neighbor_interface_type"])
             
             nodeInterfacesDict = {node["id"]: nodeInterfaces}
             graphJson["results"]["interfaces"][node["id"]] = nodeInterfaces
@@ -446,8 +446,8 @@ def getMap(id):
             node.pop("cluster", None)
         if not node["virtual_chassis"]:
             node.pop("virtual_chassis", None)
-        if not node["virtual_chassis_master_netbox_id"]:
-            node.pop("virtual_chassis_master_netbox_id")
+        if not node["virtual_chassis_netbox_id"]:
+            node.pop("virtual_chassis_netbox_id")
 
     for node in graphJson["results"]["interfaces"]:
         for interface in graphJson["results"]["interfaces"][node]:
