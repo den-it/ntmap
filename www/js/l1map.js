@@ -29,17 +29,19 @@ function OnClickDetails(device, interfaces) {
 	text += "</td><td valign='top' align='right'><a href='#' onclick='hideInfobox(); return false;'><img src='/img/close.svg' width='16' height='16' style='margin-top: 1.2em;'></a></td></tr></table>";
 	
 	if (device.thisIsCollapsedVC) {
+		text += "<table style='cellspacing: 0; cellpadding: 0; border-collapse: collapse;'>";
 		for (i in device.nodes) {
-			text += "<p style='margin-top: 0; margin-bottom: 0.2em;'>" + device.nodes[i].manufacturer + " " + device.nodes[i].model + "<br/>";
-			text += "<span class='secondary_text'>" + device.nodes[i].serial + "</span></p>";
+			text += "<tr><td>" + device.nodes[i].position_in_vc + ":&nbsp;</td><td>" + device.nodes[i].manufacturer + " " + device.nodes[i].model + "</td></tr>";
+			text += "<tr><td></td><td style='padding-bottom: 0.4em;'><span class='secondary_text'>" + device.nodes[i].serial + "</span></td></tr>";
 		}
+		text += "</table>";
 	}
 	else {
 		text += "<p style='margin-top: 0;'>" + device.manufacturer + " "  + device.model + "<br/>";
 		text += "<span class='secondary_text'>" + device.serial + "</span></p>";
 	}
 	
-	text += "<p><b style='margin-top: 2em;'>Interfaces:</b></p>";
+	text += "<p><b>Interfaces:</b></p>";
 	text += "<table class='infobox_tab' id='infobox_tab'>";
 	text += "<thead><tr> <th width='1%'><div>&nbsp;</div></th> <th width='1%'><div>Local<br/>int</div></th> <th width='1%'><div>Local<br/>LAG</div></th> <th width='1%'><div>Neighbor</div></th> <th width='1%'><div>Neighbor<br/>int</div></th> <th><div>Description</div></th> </tr></thead>";
 	text += "<tbody>";
@@ -268,34 +270,39 @@ function drawL1Map() {
 	if (!expandVirtChassisMode) { 
 		// Collapse virtual chassis, i.e. throw out all nodes in each VC except for one
 		for (i in graph.nodes) {
-			if (graph.nodes[i].hasOwnProperty("virtual_chassis_id") && graph.nodes[i].virtual_chassis_id) { // This is a VC node. It shouldn't be added to nodes list. Instead a VC node should be generated
+			if (graph.nodes[i].hasOwnProperty("virtual_chassis_netbox_id") && graph.nodes[i].virtual_chassis_netbox_id) { // This is a VC node. It shouldn't be added to nodes list. Instead a VC node should be generated
 				
 				// if vcDict doesn't have this VC, add it to vcDict
-				if (!vcDict[graph.nodes[i].virtual_chassis_id]) {
-					vcDict[graph.nodes[i].virtual_chassis_id] = {"leftGroup": graph.nodes[i].group, "nodes": [] };
+				if (!vcDict[graph.nodes[i].virtual_chassis_netbox_id]) {
+					vcDict[graph.nodes[i].virtual_chassis_netbox_id] = {"leftGroup": graph.nodes[i].group, "nodes": [] };
 					
 					// add this node to new nodesList with the name of VC
 					firstNodeOfVC = Object.assign({}, graph.nodes[i]);
 					firstNodeOfVC.id = graph.nodes[i].virtual_chassis;
-					firstNodeOfVC.netbox_id = graph.nodes[i].virtual_chassis_id;
+					firstNodeOfVC.netbox_id = graph.nodes[i].virtual_chassis_netbox_id;
 					firstNodeOfVC.serial = "";
 					firstNodeOfVC.model = "";
 					firstNodeOfVC.manufacturer = "";
 					firstNodeOfVC.thisIsCollapsedVC = true;
 					delete firstNodeOfVC["virtual_chassis"];
-					delete firstNodeOfVC["virtual_chassis_id"];
+					delete firstNodeOfVC["virtual_chassis_netbox_id"];
 
 					nodesList.push(firstNodeOfVC);
 				}
 				else { // node is in the vcDict
 					// select left group of VC. That will display the collapsed-VC-node in the very left group
-					if (graph.nodes[i].group < vcDict[graph.nodes[i].virtual_chassis_id]["leftGroup"]) 
-						vcDict[graph.nodes[i].virtual_chassis_id].leftGroup = graph.nodes[i].group;
+					if (graph.nodes[i].group < vcDict[graph.nodes[i].virtual_chassis_netbox_id]["leftGroup"]) 
+						vcDict[graph.nodes[i].virtual_chassis_netbox_id].leftGroup = graph.nodes[i].group;
 				}
 
 				
-				var nodeInfo = { "serial": graph.nodes[i].serial, "manufacturer": graph.nodes[i].manufacturer, "model": graph.nodes[i].model };
-				vcDict[graph.nodes[i].virtual_chassis_id].nodes.push(nodeInfo);
+				var nodeInfo = { 
+					"serial": graph.nodes[i].serial, 
+					"manufacturer": graph.nodes[i].manufacturer, 
+					"model": graph.nodes[i].model,
+					"position_in_vc": graph.nodes[i].position_in_vc
+				};
+				vcDict[graph.nodes[i].virtual_chassis_netbox_id].nodes.push(nodeInfo);
 				
 				// find all links of this node and change names of A and Z point in them
 				for (j in graph.links) {
@@ -323,8 +330,10 @@ function drawL1Map() {
 
 		// set serial and model for collapsed VC node to be the list of all VC members serials and models to be displayed in infobox
 		for (i in nodesList) 
-			if (nodesList[i].hasOwnProperty("thisIsCollapsedVC") && vcDict[nodesList[i].netbox_id]) 
+			if (nodesList[i].hasOwnProperty("thisIsCollapsedVC") && vcDict[nodesList[i].netbox_id]) {
 				nodesList[i].nodes = vcDict[nodesList[i].netbox_id].nodes;
+				nodesList[i].nodes.sort(compareVcNodes);
+			}
 
 		// for each link 
 		//		find all links of this node leading to virtual_chassis members and delete them
@@ -980,6 +989,15 @@ function drawL1Map() {
 // commented JSON read from file
 // });
 
+
+	function compareVcNodes(a, b) {
+		if (a.position_in_vc < b.position_in_vc)
+			return -1;
+		else if (a.position_in_vc > b.position_in_vc)
+			return 1;
+		else
+			return 0;
+	}
 
 	function compareNodes(a, b) {
 		if (a.group < b.group) // put nodes of left group on top of right group nodes, so labels of left nodes will not be overlapped by rught nodes

@@ -281,7 +281,8 @@ def getMap(id):
                                 d.id AS netbox_id,
                                 d.serial AS serial,
                                 vc.name AS virtual_chassis,
-                                vc.id AS virtual_chassis_id,
+                                vc.id AS virtual_chassis_netbox_id,
+                                d.vc_position AS position_in_vc,
                                 c.name AS cluster,
                                 r.name AS type,
                                 t.model AS model,
@@ -445,8 +446,8 @@ def getMap(id):
             node.pop("cluster", None)
         if not node["virtual_chassis"]:
             node.pop("virtual_chassis", None)
-        if not node["virtual_chassis_id"]:
-            node.pop("virtual_chassis_id")
+        if not node["virtual_chassis_netbox_id"]:
+            node.pop("virtual_chassis_netbox_id")
 
     for node in graphJson["results"]["interfaces"]:
         for interface in graphJson["results"]["interfaces"][node]:
