@@ -5,7 +5,7 @@ Before installing Ntmap, you need to prepare the needed environment. Examples be
 
 ## Dependencies
 
-- Netbox 2.8.8
+- Netbox 2.9.2
 - Python 3.x
 - PostgreSQL
 - Gunicorn
