@@ -336,20 +336,25 @@ function drawL1Map() {
 			}
 
 		// for each link 
-		//		find all links of this node leading to virtual_chassis members and delete them
+		// delete links between virtual_chassis members
 		// find all links with the same A and Z and sum amount of them
 		var linksList = new Array();
 		
 		for (i in graph.links) {
+			// only consider links wich are not between VC members
 			if (graph.links[i].source != graph.links[i].target) {
 				var similarLinks = false;
 				for (j in linksList) {
-					if (graph.links[i].source === linksList[j].source && graph.links[i].target === linksList[j].target) {
+					// for similar links just increment counter
+					if (graph.links[i].source === linksList[j].source && 
+						graph.links[i].target === linksList[j].target &&
+						graph.links[i].bandwidth === linksList[j].bandwidth) {
 						similarLinks = true;
 						linksList[j].quantity = parseInt(linksList[j].quantity) + parseInt(graph.links[i].quantity);
 					}
 				}
 				
+				// if no similar link found, add the link to the final array linksList
 				if (!similarLinks) {
 					goodLink = Object.assign({}, graph.links[i]);
 					linksList.push(goodLink);
@@ -422,6 +427,19 @@ function drawL1Map() {
 		graph.nodes[i].positionInGroup = groupsArray[graph.nodes[i].group];
 	}
 
+
+
+	// For sibling links (several links between two nodes) add lineScale attribute
+	// lineScale attribute is used to display sibling links without overlapping
+	for (i in graph.links) {
+		var siblings = getSiblingLinks(graph.links[i].source, graph.links[i].target);
+		if (siblings.length > 1) {
+			var lineScale = d3.scalePoint()
+				.domain(siblings)
+				.range([1, siblings.length])(graph.links[i].bandwidth);
+			graph.links[i].lineScale = lineScale;
+		}
+	}
 
 	// Calculate the height and width of SVG
 	svgComfortableHeight = nodesInLargestGroup * COLLISION_RADIUS * 2 + 100; // + 40;
@@ -497,10 +515,10 @@ function drawL1Map() {
 		
 	var link1 = svg.append("g")
 		.attr("id", "links") 
-		.selectAll("line")
+		.selectAll("path")
 		.data(graph.links)
 		.enter()
-		.append("line")
+		.append("path")
 			.attr("class", function(d) { return "link" + parseInt(d.bandwidth) + "gb"; })
 			.attr("stroke-width", function(d) { if ("type" in d) return 0; else return Math.sqrt(parseInt(d.bandwidth))/2; });
 
@@ -627,6 +645,99 @@ function drawL1Map() {
 		.links(graph.links);
 	  
 	
+	// returns the array of bandwidthes of all sibling links sorted from larger to smaller
+	function getSiblingLinks(source, target) {
+		var siblings = [];
+		for(var i = 0; i < graph.links.length; ++i){
+			if( (graph.links[i].source == source && graph.links[i].target == target) || 
+				(graph.links[i].source == target && graph.links[i].target == source) )
+				siblings.push(graph.links[i].bandwidth);
+		};
+		var sortedSiblings = siblings.sort( function(a, b) {return b-a} );
+		return sortedSiblings;
+	};
+
+	function circleIntersection(x0, y0, r0, x1, y1, r1) {
+        var a, dx, dy, d, h, rx, ry;
+        var x2, y2;
+
+        // dx and dy are the vertical and horizontal distances between the circle centers
+        dx = x1 - x0;
+        dy = y1 - y0;
+
+        // Determine the straight-line distance between the centers
+        d = Math.sqrt((dy*dy) + (dx*dx));
+
+        // Check for solvability
+        if (d > (r0 + r1)) {
+            // no solution. circles do not intersect
+            return false;
+        }
+        if (d < Math.abs(r0 - r1)) {
+            // no solution. one circle is contained in the other
+            return false;
+        }
+
+        // 'point 2' is the point where the line through the circle intersection points crosses the line between the circle centers  
+
+        // Determine the distance from point 0 to point 2
+        a = ((r0*r0) - (r1*r1) + (d*d)) / (2.0 * d) ;
+
+        // Determine the coordinates of point 2
+        x2 = x0 + (dx * a/d);
+        y2 = y0 + (dy * a/d);
+
+        // Determine the distance from point 2 to either of the intersection points
+        h = Math.sqrt((r0*r0) - (a*a));
+
+        // Now determine the offsets of the intersection points from point 2
+        rx = -dy * (h/d);
+        ry = dx * (h/d);
+
+        // Determine the absolute intersection points
+        var xi = x2 + rx;
+        var yi = y2 + ry;
+        var xi_prime = x2 - rx;
+        var yi_prime = y2 - ry;
+
+        if (yi > yi_prime) 
+        	return [xi, yi];
+        else
+        	return [xi_prime, yi_prime];
+
+    }
+
+    function getArcR(x1, y1, x2, y2, scale) {
+		var dx = x2 - x1,
+			dy = y2 - y1,
+			dr = Math.sqrt(dx*dx + dy*dy),
+			drx = 0.012 * dr * dr / (0.8 * scale);
+
+			return drx;
+    }
+
+    function getArcCentre(x1, y1, x2, y2, scale) {
+		midX = x1 + (x2-x1)/2,
+		midY = y1 + (y2-y1)/2,
+		r = getArcR(x1, y1, x2, y2, scale),
+		circleСntCoord = circleIntersection(x1, y1, r, x2, y2, r),
+		cirCntX = circleСntCoord[0],
+		cirCntY = circleСntCoord[1],
+		k = (midY - cirCntY)/(midX - cirCntX),
+		alf = Math.atan(k);
+
+		if (y2 < y1) {
+			x = cirCntX - r * Math.cos(alf);
+			y = cirCntY - r * Math.sin(alf);
+		}
+		else {
+			x = cirCntX + r * Math.cos(alf);
+			y = cirCntY + r * Math.sin(alf);
+		}
+
+		return [x, y];
+    }
+
 	function ticked(e) {
 		
 		/*opacity = 1 - globalSimulation.alpha();
@@ -644,22 +755,47 @@ function drawL1Map() {
 			disableSvgDownloadLink();
 		
 		link1
-			.attr("x1", function(d) { return d.source.x; })
-			.attr("y1", function(d) { return d.source.y; })
-			.attr("x2", function(d) { return d.target.x; })
-			.attr("y2", function(d) { return d.target.y; });
+			.attr("d", function(d) { 
+				if (d.lineScale && d.lineScale > 1) {
+					var drx = getArcR(d.source.x, d.source.y, d.target.x, d.target.y, d.lineScale),
+						dry = drx,
+                        sweep = 1,
+                        xRotation = 0,
+                        largeArc = 0;
+                    return "M" + d.source.x + "," + d.source.y + "A" + drx + ", " + dry + " " + xRotation + ", " + largeArc + ", " + sweep + " " + d.target.x + "," + d.target.y;
+				}
+				else 
+					return "M" + d.source.x + " " + d.source.y + " L" + d.target.x + " " + d.target.y; 
+			});
 
 		labelCircle
 			.attr("cx", function(d) {
-				return (d.source.x + d.target.x)/2 + 3; })
+				if (d.lineScale && d.lineScale > 1) 
+					return getArcCentre(d.source.x, d.source.y, d.target.x, d.target.y, d.lineScale)[0];
+				else
+					return (d.source.x + d.target.x)/2; 
+			})
 			.attr("cy", function(d) {
-				return (d.source.y + d.target.y)/2; });
+				if (d.lineScale && d.lineScale > 1) {
+					return getArcCentre(d.source.x, d.source.y, d.target.x, d.target.y, d.lineScale)[1];
+				}
+				else
+					return (d.source.y + d.target.y)/2; 
+			});
 
 		label
 			.attr("x", function(d) {
-				return (d.source.x + d.target.x)/2; })
+				if (d.lineScale && d.lineScale > 1) 
+					return getArcCentre(d.source.x, d.source.y, d.target.x, d.target.y, d.lineScale)[0] - 3;
+				else
+					return (d.source.x + d.target.x)/2 - 3; 
+			})
 			.attr("y", function(d) {
-				return (d.source.y + d.target.y)/2; });
+				if (d.lineScale && d.lineScale > 1) 
+					return getArcCentre(d.source.x, d.source.y, d.target.x, d.target.y, d.lineScale)[1];
+				else
+					return (d.source.y + d.target.y)/2; 
+			});
 
 		node
 			.attr("transform", function(d) { 

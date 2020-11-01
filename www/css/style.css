@@ -85,8 +85,12 @@ a:visited {
 /* SVG styles */
 /***********************************************************************************/
 
-/* link labels (figure inside a circle, representing the number of physical links) */
+/* all path elements inside the group "links" (liks between nodes) have no fill */
+g#links {
+	fill: none;
+}
 
+/* link labels (figure inside a circle, representing the number of physical links) */
 .labels {
 	font-size:  10px;
 	fill: white;

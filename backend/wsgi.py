@@ -244,7 +244,10 @@ def interfaceComparator(x, y):
 
     return 0    
     
-    
+
+# Rerurns JSON with all objects of given map: devices, interfaces and links between them
+# Input: (int) map id
+# Output: JSON
 def getMap(id):
     graphJson = {"result": "", "results": { "nodes": [], "links": [], "mng_links": [],"interfaces": {} } }
 
@@ -397,16 +400,12 @@ def getMap(id):
                 if (addProdLink):
                     # collapse several links between the same devices to one link with property "quantity" set to the number of links and displaying the highest bandwidth
                     for link in graphJson["results"]["links"]:
-                        if ((link["source"] == interface["device"] and link["target"] == interface["neighbor"]) or 
-                            (link["target"] == interface["device"] and link["source"] == interface["neighbor"])):
-                            addProdLink = False
-                            link["quantity"] += 1
-                            
-                            # if we have several links between two devices draw the fattest link
-                            # TODO: draw several links of different speed in the case we have really different speeds between two boxes
-                            sp = getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"])
-                            if (sp > link["bandwidth"]):
-                                link["bandwidth"] = sp
+                        if (((link["source"] == interface["device"] and link["target"] == interface["neighbor"]) or 
+                            (link["target"] == interface["device"] and link["source"] == interface["neighbor"])) and 
+                            getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"]) == link["bandwidth"]):
+                                addProdLink = False
+                                link["quantity"] += 1
+
 
                 if (addProdLink):
                     sp = getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"])
