@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+
+<g id="provider.svg">
+	<style type="text/css">
+	<![CDATA[
+		.provider_st1 { fill: white; stroke: black; stroke-linecap: round; stroke-linejoin: round; stroke-width: 24 }
+	]]>
+	</style>
+	<g transform="scale(0.94)">
+		<g transform="translate(1,-1)">
+			<g transform="scale(0.0625)">
+				<g>
+					<g>
+						<path d="M489.579,254.766c-12.942-16.932-30.829-29.887-50.839-36.933c-0.828-48.454-40.501-87.618-89.148-87.618
+							c-7.618,0-15.213,0.993-22.647,2.958c-12.102-15.076-27.37-27.615-44.441-36.457c-19.642-10.173-40.881-15.331-63.127-15.331
+							c-74.705,0-135.736,59.676-137.931,133.859C33.885,227.82,0,271.349,0,321.107c0,60.383,49.125,109.508,109.508,109.508h292.983
+							C462.875,430.615,512,381.49,512,321.107C512,296.896,504.246,273.956,489.579,254.766z" class="provider_st1"/>
+						<!--<path d="M135.62,193.401h15.555c0-26.66,21.69-48.35,48.351-48.35v-15.555C164.289,129.495,135.62,158.163,135.62,193.401z"/>-->
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+</svg>

@@ -97,15 +97,16 @@ g#links {
 }
 
 .link0gb {
-  stroke: #FFD553;
+  stroke: black;
+  stroke-dasharray: 5,5;
 }
 
 .link0gb-info {
-	background: #FFD553;
+	background: black;
 }
 
 .link0gb-label-circle {
-  fill: #FFD553;
+  fill: black;
 }
 
 .link-1gb {
@@ -219,10 +220,9 @@ g#links {
 	1overflow-y: scroll;
 }
 
-
 table.infobox_tab {
 	/* scroll */
-	margin-top:  44px; 
+	margin-top:  32px; 
 	display: inline-block; 
 	overflow: auto;
 	/* height:  100vh; */ /* default value. When infobox is displayed the height of the table is altered by JS to fit infobox borders */
@@ -233,7 +233,7 @@ table.infobox_tab {
 }
 table.infobox_tab th div {
 	/* scroll */
-	margin-top: -44px;
+	margin-top: -32px;
 	position: absolute;
 	/* design */
 	text-align: left;	

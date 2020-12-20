@@ -5,6 +5,8 @@ from urllib import parse
 import sys
 import app.common
 
+LINK_SPEED_UNKNOWN = -1.0
+LINK_SPEED_NOT_APPLICABLE = 0
 
 def application(env, start_response):
     start_response("200 OK", [("Content-Type", "application/json")])
@@ -181,7 +183,7 @@ def getMaps():
 # 100gbase-x-cfp
 def getLinkSpeedOutOfFormFactor(formFactor):
     if not (formFactor):
-        return float(-1.0)
+        return float(LINK_SPEED_UNKNOWN)
 
     if (re.search("^100base", formFactor)):
         return float(0.1)
@@ -209,7 +211,7 @@ def getLinkSpeedOutOfTwoInterfacesSpeed(intAspeed, intBspeed):
         if intBspeed > 0:
             linkSpeed = intBspeed
         else:
-            linkSpeed = -1.0
+            linkSpeed = LINK_SPEED_UNKNOWN
     
     return linkSpeed
 
@@ -243,8 +245,23 @@ def interfaceComparator(x, y):
             return 1
 
     return 0    
-    
 
+# Returns the display group of the node with given netbox_id    
+def getDeviceGroup(nodes, id):
+    for node in nodes:
+        if node["netbox_id"] == id:
+            return node["group"]
+    return None
+
+
+def getCircuitsConnectedToInterface(circuits, interface_netbox_id):
+    for circuit in circuits:
+        if circuit["interface_netbox_id"] == interface_netbox_id:
+            return circuit
+    return None
+
+
+# TODO: select only active objects: devices, circuits etc
 # Rerurns JSON with all objects of given map: devices, interfaces and links between them
 # Input: (int) map id
 # Output: JSON
@@ -275,6 +292,7 @@ def getMap(id):
                 textPatterns[i] = textPatterns[i].strip()
             goodLevelsDict.update({level: textPatterns})
         
+        # TODO: device names can have spaces, provider names also, but Ntmap doesn't allow to use name patterns with spaces
         # For each level...
         for level in goodLevelsDict.keys():
             # ...and each pattern in the level get devices from Netbox with names matching the pattern
@@ -289,7 +307,8 @@ def getMap(id):
                                 c.name AS cluster,
                                 r.name AS type,
                                 t.model AS model,
-                                m.name AS manufacturer
+                                m.name AS manufacturer,
+                                'devices' AS class
                             FROM 
                                 dcim_device d
                             LEFT JOIN 
@@ -308,7 +327,7 @@ def getMap(id):
                                 dcim_manufacturer m
                                 ON t.manufacturer_id = m.id 
                             WHERE
-                                d.name LIKE '%%{}%%';""".format(namePattern)
+                                LOWER(d.name) LIKE LOWER('%%{}%%');""".format(namePattern)
 
                 resDevices = app.common.queryDB(app.common.config["netbox"]["db"], sql)
                 
@@ -327,77 +346,199 @@ def getMap(id):
                             
                             # check that number of devices to be displayed on one level is not too big
                             nn = [n["id"] for n in graphJson["results"]["nodes"] if n["group"] == level]
-                            if len(nn) > int(app.common.config["ntmap"]["max_devices_at_one_level"]):
-                                return { "result": "Too many devices (>" + app.common.config["ntmap"]["max_devices_at_one_level"] + ") matched the pattern of this map (\"" + namePattern + "\")" }
-        
-        if not graphJson["results"]["nodes"]:
-            return { "result": "No devices matched the patterns of this map" }
+                            if len(nn) > int(app.common.config["ntmap"]["max_objects_at_one_level"]):
+                                return { "result": "Too many objects (>" + app.common.config["ntmap"]["max_objects_at_one_level"] + ") matched the pattern of this map (\"" + namePattern + "\")" }
 
-        # form interfaces json
-        for node in graphJson["results"]["nodes"]:
-            sql = """SELECT
-                            d.name as device,
-                            i.id AS netbox_id,
-                            i.name AS name,
-                            i.mgmt_only AS mgmt_only,
-                            i.lag_id AS lag_netbox_id,
-                            l.name AS lag,
-                            i.type AS type,
-                            i.description AS description,
-                            i._connected_interface_id AS neighbor_interface_netbox_id,
-                            ni.name AS neighbor_interface,
-                            ni.type AS neighbor_interface_type,
-                            ni.mgmt_only AS neighbor_interface_mgmt_only,
-                            nd.id AS neighbor_netbox_id,
-                            nd.name AS neighbor
+            # ...and each pattern in the level get providers from Netbox with names matching the pattern
+            for namePattern in goodLevelsDict[level]:
+                sql = """SELECT
+                            p.id AS netbox_id,
+                            p.name AS id,
+                            p.slug AS slug,
+                            p.asn AS asn,
+                            'circuits' AS class,
+                            'provider' AS type
                         FROM
-                            dcim_interface i
-                        INNER JOIN 
-                            dcim_device d
-                            ON i.device_id = d.id
-                        LEFT JOIN
-                            dcim_interface l
-                            ON l.id = i.lag_id
-                        LEFT JOIN
-                            dcim_interface ni
-                            ON ni.id = i._connected_interface_id
-                        LEFT JOIN 
-                            dcim_device nd
-                            ON ni.device_id = nd.id
+                            circuits_provider p
                         WHERE
-                            i.device_id={}
-                        ORDER BY name;""".format(node["netbox_id"])
-            
-            resInts = app.common.queryDB(app.common.config["netbox"]["db"], sql)
-            
-            if not resInts["result"] == "success":
-                return resInts
-            
-            nodeInterfaces = resInts["rows"]
-            nodeInterfaces.sort(key=cmp_to_key(interfaceComparator))
-            
-            for interface in nodeInterfaces:
-                interface["speed"] = getLinkSpeedOutOfFormFactor(interface["type"])
-                interface["neighbor_interface_speed"] = getLinkSpeedOutOfFormFactor(interface["neighbor_interface_type"])
-            
-            nodeInterfacesDict = {node["id"]: nodeInterfaces}
-            graphJson["results"]["interfaces"][node["id"]] = nodeInterfaces
+                            LOWER(p.name) LIKE LOWER('%%{}%%');""".format(namePattern)
 
-        # form links json
+                resProviders = app.common.queryDB(app.common.config["netbox"]["db"], sql)
+
+                if not resProviders["result"] == "success":
+                    return resProviders
+
+                providers = resProviders["rows"]
+
+                if providers and len(providers):
+                    for provider in providers:
+                        # add found provider to final graphJson only if text pattern in the current level is the longest match
+                        # we need this not to add one provider several times on different levels of the map
+                        if (isLongestMatch(provider["id"], namePattern, goodLevelsDict)):  
+                            provider["group"] = level
+                            graphJson["results"]["nodes"].append(provider)
+                            
+                            # check that number of devices to be displayed on one level is not too big
+                            nn = [n["id"] for n in graphJson["results"]["nodes"] if n["group"] == level]
+                            if len(nn) > int(app.common.config["ntmap"]["max_objects_at_one_level"]):
+                                return { "result": "Too many objects (>" + app.common.config["ntmap"]["max_objects_at_one_level"] + ") matched the pattern of this map (\"" + namePattern + "\")" }
+
+        if not graphJson["results"]["nodes"]:
+            return { "result": "No objects matched the patterns of this map" }
+
+
+        # find all circuits between providers and devices displayed on map
+        circuits = []
+        for node in graphJson["results"]["nodes"]:
+            if node["class"] == "circuits" and node["type"] == "provider":
+                sql = """SELECT
+                    p.id AS provider_netbox_id,
+                    p.name AS provider,
+                    p.slug AS provider_slug,
+                    d.name AS device,
+                    d.id AS device_netbox_id,
+                    c.id AS netbox_id,
+                    CONCAT(c.cid, '-', ct.term_side) AS id,
+                    c.commit_rate AS commit_rate,
+                    t.name AS circuit_type,
+                    i.id AS interface_netbox_id,
+                    'circuits' AS class,
+                    'circuit' AS type,
+                    '{}' AS group
+                FROM
+                    circuits_provider p,
+                    circuits_circuit c,
+                    circuits_circuittype t,
+                    circuits_circuittermination ct,
+                    dcim_interface i,
+                    dcim_device d,
+                    dcim_cable cab
+                WHERE
+                    c.provider_id = p.id AND
+                    c.type_id = t.id AND
+                    ct.circuit_id = c.id AND
+                    ct.cable_id = cab.id AND (  
+                        (cab.termination_a_id = i.id AND cab.termination_a_type_id = 5) OR 
+                        (cab.termination_b_id = i.id AND cab.termination_b_type_id = 5)
+                    ) AND
+                    i.device_id = d.id AND
+                    d.id IN ({}) AND
+                    p.id = {}
+                ORDER BY c.cid;""".format(float(node["group"]) + 0.5, 
+                                            ", ".join(str(d["netbox_id"]) for d in graphJson["results"]["nodes"]), 
+                                            node["netbox_id"])
+
+                resCircuits = app.common.queryDB(app.common.config["netbox"]["db"], sql)
+                
+                if not resCircuits["result"] == "success":
+                    return resCircuits
+                
+                circuits.extend(resCircuits["rows"])
+
+        # add found circuits as nodes of the graph
+        for circuit in circuits:
+            if float(getDeviceGroup(graphJson["results"]["nodes"], circuit["device_netbox_id"])) < float(circuit["group"]):
+                circuit["group"] = float(circuit["group"]) -1
+
+            graphJson["results"]["nodes"].append(circuit)
+
+            # check that number of objects to be displayed on one level is not too big
+            nn = [n["id"] for n in graphJson["results"]["nodes"] if n["group"] == level]
+            if len(nn) > int(app.common.config["ntmap"]["max_objects_at_one_level"]):
+                return { "result": "Too many objects (>" + app.common.config["ntmap"]["max_objects_at_one_level"] + ") matched the pattern of this map (\"" + namePattern + "\")" }
+
+        # form interfaces json for devices
+        for node in graphJson["results"]["nodes"]:
+            if node["class"] == "devices":
+                sql = """SELECT
+                                d.name as device,
+                                i.id AS netbox_id,
+                                i.name AS name,
+                                i.mgmt_only AS mgmt_only,
+                                i.lag_id AS lag_netbox_id,
+                                l.name AS lag,
+                                i.type AS type,
+                                i.description AS description,
+                                i._connected_interface_id AS neighbor_interface_netbox_id,
+                                ni.name AS neighbor_interface,
+                                ni.type AS neighbor_interface_type,
+                                ni.mgmt_only AS neighbor_interface_mgmt_only,
+                                nd.id AS neighbor_netbox_id,
+                                nd.name AS neighbor,
+                                'devices' AS neighbor_class
+                            FROM
+                                dcim_interface i
+                            INNER JOIN 
+                                dcim_device d
+                                ON i.device_id = d.id
+                            LEFT JOIN
+                                dcim_interface l
+                                ON l.id = i.lag_id
+                            LEFT JOIN
+                                dcim_interface ni
+                                ON ni.id = i._connected_interface_id
+                            LEFT JOIN 
+                                dcim_device nd
+                                ON ni.device_id = nd.id
+                            WHERE
+                                i.device_id = {}
+                            ORDER BY name;""".format(node["netbox_id"])
+                
+                resInts = app.common.queryDB(app.common.config["netbox"]["db"], sql)
+                
+                if not resInts["result"] == "success":
+                    return resInts
+                
+                nodeInterfaces = resInts["rows"]
+                nodeInterfaces.sort(key=cmp_to_key(interfaceComparator))
+                
+                for interface in nodeInterfaces:
+                    interface["speed"] = getLinkSpeedOutOfFormFactor(interface["type"])
+                    interface["neighbor_interface_speed"] = getLinkSpeedOutOfFormFactor(interface["neighbor_interface_type"])
+
+                    connectedCircuit = getCircuitsConnectedToInterface(circuits, interface["netbox_id"]) 
+                    if connectedCircuit:
+                        interface["neighbor_class"] = "circuits"
+                        interface["neighbor"] = connectedCircuit["provider"]
+                        interface["neighbor_netbox_id"] = connectedCircuit["provider_netbox_id"]
+                        interface["neighbor_slug"] = connectedCircuit["provider_slug"]
+                        interface["neighbor_interface"] = connectedCircuit["id"]
+                        interface["neighbor_interface_netbox_id"] = connectedCircuit["netbox_id"]
+
+                nodeInterfacesDict = {node["id"]: nodeInterfaces}
+                graphJson["results"]["interfaces"][node["id"]] = nodeInterfaces
+
+        # add circuit terminations to links json
+        for circuit in circuits:
+            link1 = {   "source": circuit["device"],
+                        "target": circuit["id"],
+                        "quantity": 1,
+                        "bandwidth": LINK_SPEED_NOT_APPLICABLE
+                    }
+            link2 = {   "source": circuit["provider"],
+                        "target": circuit["id"],
+                        "quantity": 1,
+                        "bandwidth": LINK_SPEED_NOT_APPLICABLE
+                    }
+            graphJson["results"]["links"].append(link1)
+            graphJson["results"]["links"].append(link2)
+
+        # add links between devices to links json
         for node in graphJson["results"]["interfaces"]:
             for interface in graphJson["results"]["interfaces"][node]:
                 addProdLink = False
                 addMngLink = False
                 
                 # if connected device is on map, this link is needed to be displayed
+                # do not consider objects of class "circuits" because their links are ready to be displayed
                 for i, value in enumerate(graphJson["results"]["nodes"]):
-                    if (interface["neighbor_netbox_id"] == graphJson["results"]["nodes"][i]["netbox_id"]):
+                    if (interface["neighbor_netbox_id"] == graphJson["results"]["nodes"][i]["netbox_id"] and graphJson["results"]["nodes"][i]["class"] == "devices"):
                         if interface["mgmt_only"] or interface["neighbor_interface_mgmt_only"]:
                             addMngLink = True
                         else:
                             addProdLink = True
                 
-                if (addProdLink):
+                if addProdLink:
                     # collapse several links between the same devices to one link with property "quantity" set to the number of links and displaying the highest bandwidth
                     for link in graphJson["results"]["links"]:
                         if (((link["source"] == interface["device"] and link["target"] == interface["neighbor"]) or 
@@ -407,7 +548,7 @@ def getMap(id):
                                 link["quantity"] += 1
 
 
-                if (addProdLink):
+                if addProdLink:
                     sp = getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"])
                     graphJson["results"]["links"].append({
                         "source": interface["device"],
@@ -417,7 +558,7 @@ def getMap(id):
                     })
                         
         
-                if (addMngLink):
+                if addMngLink:
                     # collapse several links between the same devices to one link with property "quantity" set to the number of links and displaying the highest bandwidth
                     for link in graphJson["results"]["mng_links"]:
                         if ((link["source"] == interface["device"] and link["target"] == interface["neighbor"]) or 
@@ -431,7 +572,7 @@ def getMap(id):
                             if (sp > link["bandwidth"]):
                                 link["bandwidth"] = sp
 
-                if (addMngLink):
+                if addMngLink:
                     sp = getLinkSpeedOutOfTwoInterfacesSpeed(interface["speed"], interface["neighbor_interface_speed"])
                     graphJson["results"]["mng_links"].append({
                         "source": interface["device"],
@@ -440,13 +581,16 @@ def getMap(id):
                         "quantity": 1
                     })
 
+    # throw away unnecessary fields 
     for node in graphJson["results"]["nodes"]:
-        if not node["cluster"]:
-            node.pop("cluster", None)
-        if not node["virtual_chassis"]:
-            node.pop("virtual_chassis", None)
-        if not node["virtual_chassis_netbox_id"]:
-            node.pop("virtual_chassis_netbox_id")
+        if node["class"] == "devices":
+            if not node["cluster"]:
+                node.pop("cluster", None)
+            if not node["virtual_chassis"]:
+                node.pop("virtual_chassis", None)
+                node.pop("position_in_vc", None)
+            if not node["virtual_chassis_netbox_id"]:
+                node.pop("virtual_chassis_netbox_id")
 
     for node in graphJson["results"]["interfaces"]:
         for interface in graphJson["results"]["interfaces"][node]:
@@ -460,6 +604,7 @@ def getMap(id):
                 interface.pop("neighbor_interface_netbox_id", None)
                 interface.pop("neighbor_netbox_id", None)
 
+    # divide number of links between each pair of devices by two (they were calculated twice: one time for each end of the link) 
     for i, value in enumerate(graphJson["results"]["links"]):
         if graphJson["results"]["links"][i]["quantity"] > 1:
             graphJson["results"]["links"][i]["quantity"] = int(graphJson["results"]["links"][i]["quantity"] / 2)

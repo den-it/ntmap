@@ -16,8 +16,9 @@ The usage of Ntmap is very simple. You can have several (or many) network topolo
 
 To edit groups of maps or maps themselves just click **lock** symbol on the "L1 maps" page. You will enter edit mode. Add needed groups and maps.
 
-To define a map give it a name and describe devices you want to display in the "Scheme" field. Example:
+To define a map give it a name and describe devices and providers you want to display in the "Scheme" field. Example:
 ```
+Provider
 dc1-rt, dc1-fw
 dc1-spsw
 dc1-blfsw, dc1-lfsw
@@ -26,7 +27,7 @@ dc1-srv, dc1-nas
 dc1-
 ```
 
-Ntmap will search Netbox database for given name patterns and will display found devices on map. Each line of the scheme represents a level at which a found device will be displayed on the final graph.
+Ntmap will search Netbox database for given name patterns and will display found devices and providers on map. Each line of the scheme represents a level at which a found device or provider will be displayed on the final graph.
 
 The example scheme above can generate a network graph for production links like this:
 
@@ -48,9 +49,9 @@ You can add your own icons to Ntmap graphs. To do this, you need to create new S
 For example, 
 ```
 var DEVICE_ROLES = {
-	"Router": 						"router.svg",
-	"Firewall": 						"firewall.svg",
-	"Unknown": 					"unknown.svg"
+	"Router": 	"router.svg",
+	"Firewall": "firewall.svg",
+	"Unknown": 	"unknown.svg"
 }
 ```
 defines that all devices with role "Router" found in Netbox will be depicted by **router.svg** and all firewalls will be shown as **firewall.svg**. All other devices will be shown as **unknown.svg** (question mark icon).
@@ -58,6 +59,6 @@ defines that all devices with role "Router" found in Netbox will be depicted by 
 
 #### Maximum Devices at One  Level
 
-You can limit the maximum number of devices depicted at one level of your maps. This is relevant when you want to prevent Ntmap consuming too much CPU and memory of your machine. Large maps can be resourse-demanding.
+You can limit the maximum number of objects (devices, providers and circuits) depicted at one level of your maps. This is relevant when you want to prevent Ntmap consuming too much CPU and memory of your machine. Large maps can be resourse-demanding.
 
-To do this change **max_devices_at_one_level** variable in ```settings.ini```. For changes to take effect, you need to restart Ntmap service.
+To do this change **max_objects_at_one_level** variable in ```settings.ini```. For changes to take effect, you need to restart Ntmap service.

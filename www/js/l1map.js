@@ -15,7 +15,53 @@ function hideInfobox() {
 }
 
 
-function OnClickDetails(device, interfaces) {
+function OnClickDetails(node, interfaces=null) {
+	if (node.class == "circuits")
+		if (node.type == "provider")
+			onClickProviderDetails(node);
+		else 
+			onClickCircuitDetails(node);
+	else
+		onClickDeviceDetails(node, interfaces);
+}
+
+function onClickProviderDetails(provider) {
+	var infobox = document.getElementById('infobox');
+	infobox.style.display = 'block';
+	text  = "<img src='/img/pixel.png' width='600' height='1'/>";
+	text += "<table width='100%'><tr><td>";
+	text += "<h3 style='margin-bottom: 0.5em; margin-top: 1em;'><a target='_blank' href='" + NETBOX_URL + "/circuits/providers/" + provider.slug + "/'>";
+	text += provider.id + "</a></h3>";
+	text += "</td><td valign='top' align='right'><a href='#' onclick='hideInfobox(); return false;'><img src='/img/close.svg' width='16' height='16' style='margin-top: 1.2em;'></a></td></tr>";
+	if (provider.asn)
+		text += "<tr><td>ASN: " + provider.asn + "</td></tr>";
+	text += "</table>";
+	
+	infobox.innerHTML = text;
+	infobox.style.height = "150px";
+	infobox.style.width = "300px";
+}
+
+function onClickCircuitDetails(circuit) {
+	var infobox = document.getElementById('infobox');
+	infobox.style.display = 'block';
+	text  = "<img src='/img/pixel.png' width='600' height='1'/>";
+	text += "<table width='100%'><tr><td>";
+	text += "<h3 style='margin-bottom: 0.5em; margin-top: 1em;'><a target='_blank' href='" + NETBOX_URL + "/circuits/circuits/" + circuit.netbox_id + "/'>";
+	text += circuit.id.slice(0, -2) + "</a> <span class='secondary_text'>Side " + circuit.id.slice(-1) + "</span></h3>";
+	text += "</td><td valign='top' align='right'><a href='#' onclick='hideInfobox(); return false;'><img src='/img/close.svg' width='16' height='16' style='margin-top: 1.2em;'></a></td></tr>";
+	text += "<tr><td>Provider: " + circuit.provider + "</td></tr>";
+	text += "<tr><td>Type: " + circuit.circuit_type + "</td></tr>";
+	if (circuit.commit_rate)
+		text += "<tr><td>Commit Rate: " + getReadableBpsString(circuit.commit_rate) + "</td></tr>";
+	text += "</table>";
+	
+	infobox.innerHTML = text;
+	infobox.style.height = "150px";
+	infobox.style.width = "300px";
+}
+
+function onClickDeviceDetails(device, interfaces) {
 	var infobox = document.getElementById('infobox');
 	infobox.style.display = 'block';
 		
@@ -43,7 +89,7 @@ function OnClickDetails(device, interfaces) {
 	
 	text += "<p><b>Interfaces:</b></p>";
 	text += "<table class='infobox_tab' id='infobox_tab'>";
-	text += "<thead><tr> <th width='1%'><div>&nbsp;</div></th> <th width='1%'><div>Local<br/>int</div></th> <th width='1%'><div>Local<br/>LAG</div></th> <th width='1%'><div>Neighbor</div></th> <th width='1%'><div>Neighbor<br/>int</div></th> <th><div>Description</div></th> </tr></thead>";
+	text += "<thead><tr> <th width='1%'><div>&nbsp;</div></th> <th width='1%'><div>Name</div></th> <th width='1%'><div>LAG</div></th> <th width='1%'><div>Connection</div></th> <th width='1%'><div></div></th> <th><div>Description</div></th> </tr></thead>";
 	text += "<tbody>";
 	
 	for (i in interfaces) {
@@ -63,8 +109,14 @@ function OnClickDetails(device, interfaces) {
 			text += "<td>&nbsp;</td>";
 
 		if (interfaces[i].neighbor) {
-			text += "<td class='secondary_text' nowrap><a target='_blank' href='" + NETBOX_URL + "/dcim/devices/" + interfaces[i].neighbor_netbox_id + "/' class='secondary_text'>" + interfaces[i].neighbor + "</a></td>";
-			text += "<td class='secondary_text' nowrap><a target='_blank' href='" + NETBOX_URL + "/dcim/interfaces/" + interfaces[i].neighbor_interface_netbox_id + "/' class='secondary_text'>" + interfaces[i].neighbor_interface + "</a></td>";
+			if (interfaces[i].neighbor_class == "circuits") {
+				text += "<td class='secondary_text' nowrap><i class='fa fa-globe'></i> <a target='_blank' href='" + NETBOX_URL + "/circuits/providers/" + interfaces[i].neighbor_slug + "/' class='secondary_text'>" + interfaces[i].neighbor + "</a></td>";
+				text += "<td class='secondary_text' nowrap><a target='_blank' href='" + NETBOX_URL + "/circuits/circuits/" + interfaces[i].neighbor_interface_netbox_id + "/' class='secondary_text'>" + interfaces[i].neighbor_interface + "</a></td>";
+			}
+			else {
+				text += "<td class='secondary_text' nowrap><a target='_blank' href='" + NETBOX_URL + "/dcim/devices/" + interfaces[i].neighbor_netbox_id + "/' class='secondary_text'>" + interfaces[i].neighbor + "</a></td>";
+				text += "<td class='secondary_text' nowrap><a target='_blank' href='" + NETBOX_URL + "/dcim/interfaces/" + interfaces[i].neighbor_interface_netbox_id + "/' class='secondary_text'>" + interfaces[i].neighbor_interface + "</a></td>";
+			}
 		}
 		else
 			text += "<td>&nbsp;</td><td>&nbsp;</td>"
@@ -91,7 +143,24 @@ function OnClickDetails(device, interfaces) {
 		infoboxTab.style.height = (infobox.clientHeight - infoboxTab.offsetTop - 30) + "px";
 	else 
 		infobox.style.height = (infoboxTab.offsetTop + infoboxTab.clientHeight - infobox.offsetTop + 20) + "px";
+	infobox.style.width = "700px";
+
 }
+
+
+function getReadableBpsString(speed) {
+    var i = -1;
+    var byteUnits = [' Mbps', ' Gbps', ' Tbps', 'Pbps', 'Ebps', 'Zbps', 'Ybps'];
+    do {
+        speed = speed / 1000;
+        i++;
+    } while (speed > 1000);
+
+    if (parseFloat(Math.max(speed, 0.1).toFixed(1)) == parseFloat(Math.max(speed, 0.1).toFixed()))
+    	return Math.max(speed, 0.1).toFixed() + byteUnits[i];
+    else
+    	return Math.max(speed, 0.1).toFixed(1) + byteUnits[i];
+};
 
 
 var getJSON = function(url, callback) {
@@ -463,7 +532,6 @@ function drawL1Map() {
 		.attr("height", svgHeight)
 		.attr("width", svgWidth);  
 
-	// TODO: add provider channels
 	globalSimulation = d3.forceSimulation()
 		.force("link1", d3.forceLink().id(function(d) { return d.id; })
 			/*.distance(function(d){
@@ -486,7 +554,12 @@ function drawL1Map() {
 			})
 		)
 		.force("charge", d3.forceManyBody()
-			.strength(-300)
+			.strength(function(d){
+				if ("class" in d && d.class == "circuits" && "type" in d && d.type == "circuit")
+					return -10;
+				else
+					return -300;
+			})
 		)
 		.force("x", d3.forceX(function(d){ return d.group * svgWidth / groupsArray.length - 60; })
 			.strength(4)
@@ -505,8 +578,8 @@ function drawL1Map() {
 		//.force("center", d3.forceCenter(svgWidth / 2 + 50, height / 2))
 		.force("collision", d3.forceCollide()
 			.radius(function(d) {
-				if ("type" in d)
-					return COLLISION_RADIUS;
+				if ("class" in d && d.class == "circuits" && "type" in d && d.type == "circuit")
+					return COLLISION_RADIUS/2;
 				else 
 					return COLLISION_RADIUS;
 			})
@@ -520,7 +593,7 @@ function drawL1Map() {
 		.enter()
 		.append("path")
 			.attr("class", function(d) { return "link" + parseInt(d.bandwidth) + "gb"; })
-			.attr("stroke-width", function(d) { if ("type" in d) return 0; else return Math.sqrt(parseInt(d.bandwidth))/2; });
+			.attr("stroke-width", function(d) { if ("type" in d) return 0; else if (d.bandwidth == 0) return 1; else return Math.sqrt(parseInt(d.bandwidth))/2; });
 
 	var labelCircle = svg.append("g")
 		.attr("id", "labelCircles") 
@@ -570,13 +643,12 @@ function drawL1Map() {
 		.attr("x", -16)
 		.attr("y", -16);
 	node.append("text")
-		//.attr("font-size", "0.8em") 
 		.attr("dx", 16)
-		.attr("dy", 4)
+		.attr("dy", function(d) {if (d.class == "circuits" && d.type == "circuit") return 8; else return 4;} )
 		.attr("x", +8)
 		.attr("font-weight", function(d) { if ("thisIsCollapsedVC" in d) return "bold"; else return "normal"; })
 		.text(function(d) { 
-			if ("cluster" in d && d.cluster) 
+			if (d.class == "devices" && "cluster" in d && d.cluster) 
 				return d.id.substring(d.cluster.length+1); 
 			else if ("virtual_chassis" in d && d.virtual_chassis)
 				return d.id.substring(d.virtual_chassis.length+1); 
@@ -584,6 +656,19 @@ function drawL1Map() {
 			//	return d.id + " (vc)";
 			else
 				return d.id; 
+		});                
+	node.append("text")
+		.attr("fill", "grey")
+		.attr("font-size", "0.8em")
+		.attr("dx", 16)
+		.attr("dy", -6)
+		.attr("x", +8)
+		.attr("font-weight", "normal")
+		.text(function(d) { 
+			if (d.class == "circuits" && d.type == "circuit") 
+				return d.circuit_type;
+			else
+				return ""; 
 		});                
 	node.append("title")
 		.text(function(d) { return d.id; });

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xml:space="preserve" color-interpolation-filters="sRGB">
+	
+	<g id="circuit.svg">
+		<style type="text/css">
+		<![CDATA[
+			.circuit_st1 { fill: white; stroke: black; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1 }
+		]]>
+		</style>
+		<path d="M2,16 L19,11 L17,17  L30,16 L13,21 L15,15z" class="circuit_st1"/>
+	</g>
+	
+</svg>
