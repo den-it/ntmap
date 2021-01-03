@@ -37,7 +37,7 @@ And a network graph for management links like this:
 
 ![Screenshot of DC1 network topology map management links](media/dc1_mng_map.png "DC1 Network Topology Map Management Links")
 
-*Note:* link is considered to be a management link when at least one of the interfaces forming the link is marked as "OOB Management" in Netbox.
+**Note:** link is considered to be a management link when at least one of the interfaces forming the link is marked as "OOB Management" in Netbox.
 
 
 ### Changing Ntmap Settings
