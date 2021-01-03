@@ -651,9 +651,7 @@ function drawL1Map() {
 			if (d.class == "devices" && "cluster" in d && d.cluster) 
 				return d.id.substring(d.cluster.length+1); 
 			else if ("virtual_chassis" in d && d.virtual_chassis)
-				return d.id.substring(d.virtual_chassis.length+1); 
-			//else if ("thisIsCollapsedVC" in d)
-			//	return d.id + " (vc)";
+				return getShortNameOfVcNode(d.virtual_chassis, d.id);
 			else
 				return d.id; 
 		});                
@@ -730,6 +728,19 @@ function drawL1Map() {
 		.links(graph.links);
 	  
 	
+	// returns the short name of a device that is a member of VC by discarding common portion of the name
+	// example: VC 'dc1-sw02', device 'dc1-sw02-node3' -> short name 'node3' 
+	function getShortNameOfVcNode(vcName, fullNodeName) {
+		let shortName = "";
+		fullNodeName.split('').forEach(function(val, i) {
+			if (val != vcName.charAt(i))
+				shortName += val ;         
+		});
+		if (shortName.charAt(0) == "-" || shortName.charAt(0) == "_")
+			shortName = shortName.substring(1);
+		return shortName;
+	}
+
 	// returns the array of bandwidthes of all sibling links sorted from larger to smaller
 	function getSiblingLinks(source, target) {
 		var siblings = [];
@@ -1264,8 +1275,12 @@ function getPageNameFromId() {
 	d3.json(NTMAP_BACKEND_URI + "/l1maps", function(error, mapsListResults) {
 		if (error) 
 			throw error;
-		
-		mapsList = mapsListResults["results"]; // TODO: parse errors in case result is not success
+		if (mapsListResults.result != "success") {
+			document.getElementById("crumbs_last_element").innerHTML = mapsListResults.result;
+			return null;
+		}
+
+		mapsList = mapsListResults["results"];
 		
 		pageName = "";
 		for (i in mapsList)  {

@@ -37,7 +37,7 @@ And a network graph for management links like this:
 
 ![Screenshot of DC1 network topology map management links](media/dc1_mng_map.png "DC1 Network Topology Map Management Links")
 
-Link is considered to be a management link when at least one of the interfaces forming the link is marked as "OOB Management" in Netbox.
+*Note:* link is considered to be a management link when at least one of the interfaces forming the link is marked as "OOB Management" in Netbox.
 
 
 ### Changing Ntmap Settings
@@ -49,15 +49,15 @@ You can add your own icons to Ntmap graphs. To do this, you need to create new S
 For example, 
 ```
 var DEVICE_ROLES = {
-	"Router": 	"router.svg",
+	"Router":   "router.svg",
 	"Firewall": "firewall.svg",
-	"Unknown": 	"unknown.svg"
+	"Unknown":  "unknown.svg"
 }
 ```
 defines that all devices with role "Router" found in Netbox will be depicted by **router.svg** and all firewalls will be shown as **firewall.svg**. All other devices will be shown as **unknown.svg** (question mark icon).
 
 
-#### Maximum Devices at One  Level
+#### Maximum Objects at One  Level
 
 You can limit the maximum number of objects (devices, providers and circuits) depicted at one level of your maps. This is relevant when you want to prevent Ntmap consuming too much CPU and memory of your machine. Large maps can be resourse-demanding.
 
