@@ -75,10 +75,28 @@ function onClickDeviceDetails(device, interfaces) {
 	text += "</td><td valign='top' align='right'><a href='#' onclick='hideInfobox(); return false;'><img src='/img/close.svg' width='16' height='16' style='margin-top: 1.2em;'></a></td></tr></table>";
 	
 	if (device.thisIsCollapsedVC) {
-		text += "<table style='cellspacing: 0; cellpadding: 0; border-collapse: collapse; height: 200px; overflow: auto; display: inline-block;'>";
-		for (i in device.nodes) {
-			text += "<tr><td>" + device.nodes[i].position_in_vc + ":&nbsp;</td><td>" + device.nodes[i].manufacturer + " " + device.nodes[i].model + "</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
-			text += "<tr><td></td><td style='padding-bottom: 0.4em;'><span class='secondary_text'>" + device.nodes[i].serial + "</span></td></tr>";
+		text += "<table id='infobox_vc_tab' style='cellspacing: 0; cellpadding: 0; border-collapse: collapse; overflow: auto; display: inline-block;'>";
+		if (device.nodes.length > 2) { // print VC nodes in two columns if their number is big
+			nodesInColumn = Math.ceil(device.nodes.length/2);
+			for (i = 0; i < nodesInColumn; i++) {
+				if (device.nodes[nodesInColumn + i]) {
+					device2_position_in_vc = device.nodes[nodesInColumn + i].position_in_vc + ":";
+					device2_manufacturer = device.nodes[nodesInColumn + i].manufacturer;
+					device2_model = device.nodes[nodesInColumn + i].model;
+					device2_serial = device.nodes[nodesInColumn + i].serial;
+				}
+				else
+					device2_position_in_vc = device2_manufacturer = device2_model = device2_serial = "";
+				text += "<tr><td>" + device.nodes[i].position_in_vc + ":&nbsp;</td><td>" + device.nodes[i].manufacturer + " " + device.nodes[i].model + "</td><td><img src='/img/pixel.png' width='40' height='1'></td><td>" + device2_position_in_vc + "&nbsp;</td><td>" + device2_manufacturer + " " + device2_model + "</td><td><img src='/img/pixel.png' width='20' height='1'></td></tr>";
+				text += "<tr><td></td><td style='padding-bottom: 0.4em;'><span class='secondary_text'>" + device.nodes[i].serial + "</span></td><td></td><td></td><td style='padding-bottom: 0.4em;'><span class='secondary_text'>" + device2_serial + "</span></td></tr>";
+			}
+
+		}
+		else { // small number of VC nodes can be printed in one coulumn
+			for (i in device.nodes) {
+				text += "<tr><td>" + device.nodes[i].position_in_vc + ":&nbsp;</td><td>" + device.nodes[i].manufacturer + " " + device.nodes[i].model + "</td><td><img src='/img/pixel.png' width='20' height='1'></td></tr>";
+				text += "<tr><td></td><td style='padding-bottom: 0.4em;'><span class='secondary_text'>" + device.nodes[i].serial + "</span></td></tr>";
+			}
 		}
 		text += "</table>";
 	}
@@ -134,7 +152,15 @@ function onClickDeviceDetails(device, interfaces) {
 	
 	infobox.innerHTML = text;
 	
-	// ajust height of table (if we have a big list of interfaces) so that it fits infobox dimensions 
+	// ajust height of VC table (if we have a big list of VC nodes) so that it fits infobox dimensions 
+	// TODO: do it with pure CSS
+	var infoboxVcTab = document.getElementById('infobox_vc_tab');
+	
+	if (infoboxVcTab) {
+		if (infoboxVcTab.scrollHeight > 160) 
+			infoboxVcTab.style.height = "160px";
+	}
+	// ajust height of interface table (if we have a big list of interfaces) so that it fits infobox dimensions 
 	// TODO: do it with pure CSS
 	var infoboxTab = document.getElementById('infobox_tab');
 	
