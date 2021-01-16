@@ -7,7 +7,7 @@
 		<style type="text/css">
 		<![CDATA[
 			.vc_st1 { fill: #ffe393; stroke:none; }
-			.vc_st2 { fill: #000000; stroke:none; font-family: Arial, Helvetica, sans-serif; font-size:7px; font-weight: bold; }
+			.vc_st2 { fill: #000000; stroke:none; font-family: Arial, Helvetica, sans-serif; font-size:10px; }
 			.vc_st3 { fill: none;fill-rule:evenodd;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
 		]]>
 		</style>
@@ -15,7 +15,7 @@
 		<g>
 			<g>
 				<ellipse cx="8" cy="8" rx="8" ry="8" class="vc_st1"/>
-				<text x="3" y="11" class="vc_st2">VC</text>
+				<text x="2.4" y="12" class="vc_st2">16</text>
 			</g>
 		</g>
 	</g>

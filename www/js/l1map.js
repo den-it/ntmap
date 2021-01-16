@@ -75,9 +75,9 @@ function onClickDeviceDetails(device, interfaces) {
 	text += "</td><td valign='top' align='right'><a href='#' onclick='hideInfobox(); return false;'><img src='/img/close.svg' width='16' height='16' style='margin-top: 1.2em;'></a></td></tr></table>";
 	
 	if (device.thisIsCollapsedVC) {
-		text += "<table style='cellspacing: 0; cellpadding: 0; border-collapse: collapse;'>";
+		text += "<table style='cellspacing: 0; cellpadding: 0; border-collapse: collapse; height: 200px; overflow: auto; display: inline-block;'>";
 		for (i in device.nodes) {
-			text += "<tr><td>" + device.nodes[i].position_in_vc + ":&nbsp;</td><td>" + device.nodes[i].manufacturer + " " + device.nodes[i].model + "</td></tr>";
+			text += "<tr><td>" + device.nodes[i].position_in_vc + ":&nbsp;</td><td>" + device.nodes[i].manufacturer + " " + device.nodes[i].model + "</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
 			text += "<tr><td></td><td style='padding-bottom: 0.4em;'><span class='secondary_text'>" + device.nodes[i].serial + "</span></td></tr>";
 		}
 		text += "</table>";
@@ -672,12 +672,23 @@ function drawL1Map() {
 		.text(function(d) { return d.id; });
 	
 	var collapsedVC = d3.selectAll("g[id='nodes']").selectAll("a").filter(function(d) { if (d.thisIsCollapsedVC) return true; else return false;});
-	collapsedVC.append("image")
+	/* collapsedVC.append("image")
 		.attr("xlink:href", "/img/vc.svg")
 		.attr("width", 16)
 		.attr("height", 16)
 		.attr("x", 8)
-		.attr("y", -24);
+		.attr("y", -24);*/
+	collapsedVC.append("ellipse")
+		.attr("cx", 16)
+		.attr("cy", -16)
+		.attr("rx", 8)
+		.attr("ry", 8)
+		.attr("class", "vcNodesNumCircle");
+	collapsedVC.append("text")
+		.attr("x", function(d) {return getTextPositionInLabel(d.nodes.length);} )
+		.attr("y", -12)
+		.attr("class", "vcNodesNum")
+			.text(function(d) { return d.nodes.length; });
 		
 	var cluster = svg.append("g")
 		.attr("id", "clusters") 
@@ -882,9 +893,9 @@ function drawL1Map() {
 		label
 			.attr("x", function(d) {
 				if (d.lineScale && d.lineScale > 1) 
-					return getArcCentre(d.source.x, d.source.y, d.target.x, d.target.y, d.lineScale)[0] - 3;
+					return getArcCentre(d.source.x, d.source.y, d.target.x, d.target.y, d.lineScale)[0] + getTextPositionInLabel(d.quantity) - 16;
 				else
-					return (d.source.x + d.target.x)/2 - 3; 
+					return (d.source.x + d.target.x)/2 + getTextPositionInLabel(d.quantity) - 16; 
 			})
 			.attr("y", function(d) {
 				if (d.lineScale && d.lineScale > 1) 
@@ -1221,6 +1232,10 @@ function drawL1Map() {
 // commented JSON read from file
 // });
 
+	function getTextPositionInLabel(text) {
+		text = text + "";
+		return 15 - (text.length * 2.2); 
+	}
 
 	function compareVcNodes(a, b) {
 		if (a.position_in_vc < b.position_in_vc)
@@ -1232,30 +1247,77 @@ function drawL1Map() {
 	}
 
 	function compareNodes(a, b) {
+		function getStrPortion(s) {
+			return s.match(/^\D+/);
+		}
+
+		function getNumberPortion(s) {
+			return s.match(/^\d+/);
+		}
+
+		function compareSubstr(a, b) {
+			if (a > b) 
+				return 1;
+			else if (a < b)
+				return -1;
+			else
+				return 0;
+		}
+
+		function compareNumbers(a, b){
+			intA = Number(a);
+			intB = Number(b);
+			if (intA > intB) 
+				return 1;
+			else if (intA < intB)
+				return -1;
+			else
+				return 0;
+		}
+
 		if (a.group < b.group) // put nodes of left group on top of right group nodes, so labels of left nodes will not be overlapped by rught nodes
 			return 1;
 		else if (a.group > b.group)
 			return -1;
 		else { // if nodes are in the same group, sort them alphabetically
-			// Normalize strings a and b like this: dc2-sw01-member1 => DC2-SW01-MEMBER01. This is easier to compare
-			var aToCompare = a.id;
-			var bToCompare = b.id;
-			//console.log(b);
-			
-			aToCompare = aToCompare.replace(/(member)([0-9]$)/, (match, name, member_id) => `${name}0${member_id}`);
-			bToCompare = bToCompare.replace(/(member)([0-9]$)/, (match, name, member_id) => `${name}0${member_id}`);
-			aToCompare = aToCompare.replace(/(node)([0-9]$)/, (match, name, member_id) => `${name}0${member_id}`);
-			bToCompare = bToCompare.replace(/(node)([0-9]$)/, (match, name, member_id) => `${name}0${member_id}`);
-			aToCompare = aToCompare.toUpperCase();
-			bToCompare = bToCompare.toUpperCase();
-			
-			// compare normalized node names
-			if (aToCompare > bToCompare) 
-				return 1;
-			else if (aToCompare < bToCompare)
-				return -1;
-			else
-				return 0;
+			aStr = a.id;
+			bStr = b.id;
+
+			while (aStr && bStr) {
+				// find letter and digit portions of strings and compare them differently. This is fo ensure that str "011" is "bigger" than "10" 
+				aSub = getStrPortion(aStr);
+				bSub = getStrPortion(bStr);
+				aSubIsNumber = false;
+				bSubIsNumber = false;
+
+				if (!aSub) {
+					aSub = getNumberPortion(aStr);
+					aSubIsNumber = true;
+				}
+				if (!bSub) {
+					bSub = getNumberPortion(bStr);
+					bSubIsNumber = true;
+				}
+
+				if (!aSub)
+					if (!bSub)
+						return 0;
+					else
+						return -1;
+
+				if (aSubIsNumber && bSubIsNumber)
+					compResult = compareNumbers(aSub, bSub);
+				else
+					compResult = compareSubstr(aSub, bSub);
+
+				if (compResult != 0)
+					return compResult;
+
+				aStr = aStr.substring(aSub[0].length);
+				bStr = bStr.substring(bSub[0].length);
+			}
+
+			return 0;
 		}
 	}
 

@@ -197,6 +197,15 @@ g#links {
 	border-collapse: collapse;
 }
 
+.vcNodesNumCircle {
+	fill: #ffe393;
+}
+
+.vcNodesNum {
+	fill: #000000; 
+	stroke:none; 
+	font-size:10px; 
+}
 
 /* Infobox styles */
 /***********************************************************************************/

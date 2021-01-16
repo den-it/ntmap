@@ -354,8 +354,13 @@ function processGroupReqChange() {
 function showMaps(edit_mode=false) {
 	d3.json(NTMAP_BACKEND_URI + "/l1maps", function(error, mapsList) {
 		if (error) throw error;
-		
-		globalMapsList = mapsList["results"]; // TODO: parse errors in case result is not success
+
+		if (mapsList.result != "success") {
+			document.getElementById("error-message").innerHTML = mapsList.result;
+			document.getElementById('error-message').style.display = "block";
+			return null;
+		}
+		globalMapsList = mapsList["results"];
 				
 		mapsListHtml = "";
 		for (i in globalMapsList) {
