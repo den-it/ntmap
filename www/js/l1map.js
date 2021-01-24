@@ -335,7 +335,7 @@ function drawL1Map() {
 	
 	if (!globalGraph.nodes) 
 		return false;
-	
+
 	// stop simulation to prevent prod-mng switch artifacts
 	if (globalSimulation)
 		globalSimulation.stop();
@@ -345,8 +345,14 @@ function drawL1Map() {
 
 	// initial svg height & width. Will be corrected later according to the number of elements on L1-map
 	var svgHeight = 0; 
-	var svgWidth  = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - 20;
+	var svgWidth  = 0;
+	if (graph.vertical)
+		svgWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - 20;
+	else
+		svgHeight = (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) - 20;
 	var COLLISION_RADIUS = 36;
+	if (!graph.vertical)
+		COLLISION_RADIUS = 44;
 	
 	mapid = getParameterByName("id");
 	// commented JSON read from file
@@ -537,18 +543,39 @@ function drawL1Map() {
 	}
 
 	// Calculate the height and width of SVG
-	svgComfortableHeight = nodesInLargestGroup * COLLISION_RADIUS * 2 + 100; // + 40;
-	if ((window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) > svgComfortableHeight)
-		svgHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-	else
-		svgHeight = svgComfortableHeight;
+	if (graph.vertical) {
+		svgComfortableHeight = nodesInLargestGroup * COLLISION_RADIUS * 2 + 100; // + 40;
+		if ((window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) > svgComfortableHeight)
+			svgHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		else
+			svgHeight = svgComfortableHeight;
+	}
+	else {
+		svgComfortableWidth = nodesInLargestGroup * COLLISION_RADIUS * 2 + 100; // + 40;
+		if ((window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) > svgComfortableWidth)
+			svgWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+		else
+			svgWidth = svgComfortableWidth;
+		if (svgHeight < groupsArray.length * COLLISION_RADIUS * 3 + 100)
+			svgHeight = groupsArray.length * COLLISION_RADIUS * 3 + 100;
+	}
 	
 	// Put nodes in fixed Y positions (sorted by node.id)
-	for (i in graph.nodes) {
-		groupOffsetY = (nodesInLargestGroup - groupsArray[graph.nodes[i].group])/2 * COLLISION_RADIUS * 2;
-		graph.nodes[i].fy = COLLISION_RADIUS * 2 * graph.nodes[i].positionInGroup + groupOffsetY;
-		//graph.nodes[i].fx=1;
-		graph.nodes[i].fx =  graph.nodes[i].group * svgWidth / groupsArray.length - 60;
+	if (graph.vertical) {
+		for (i in graph.nodes) {
+			groupOffsetY = (nodesInLargestGroup - groupsArray[graph.nodes[i].group])/2 * COLLISION_RADIUS * 2;
+			graph.nodes[i].fy = COLLISION_RADIUS * 2 * graph.nodes[i].positionInGroup + groupOffsetY;
+			//graph.nodes[i].fx=1;
+			graph.nodes[i].fx =  graph.nodes[i].group * svgWidth / groupsArray.length - 60;
+		}
+	}
+	else {
+		for (i in graph.nodes) {
+			groupOffsetX = (nodesInLargestGroup - groupsArray[graph.nodes[i].group])/2 * COLLISION_RADIUS * 2;
+			graph.nodes[i].fx = COLLISION_RADIUS * 2 * graph.nodes[i].positionInGroup + groupOffsetX;
+			//graph.nodes[i].fx=1;
+			graph.nodes[i].fy =  graph.nodes[i].group * svgHeight / groupsArray.length - 60;
+		}
 	}
 	
 	var svg = d3.select("svg[id='svg1']");
@@ -557,6 +584,10 @@ function drawL1Map() {
 	svg
 		.attr("height", svgHeight)
 		.attr("width", svgWidth);  
+	var footer = document.getElementById('footer');
+	// TODO: do it with pure CSS
+	if (footer.clientWidth < svgWidth)
+		footer.style.width =  svgWidth + "px";
 
 	globalSimulation = d3.forceSimulation()
 		.force("link1", d3.forceLink().id(function(d) { return d.id; })
@@ -587,20 +618,6 @@ function drawL1Map() {
 					return -300;
 			})
 		)
-		.force("x", d3.forceX(function(d){ return d.group * svgWidth / groupsArray.length - 60; })
-			.strength(4)
-		)
-		.force("y", d3.forceY(function(d){ return svgHeight/2; })
-			.strength(function (d){
-				// values from 0.5 to 0.01?
-				if (nodesInLargestGroup)
-					//return (0.9 / nodesInLargestGroup); // TODO: do it the function of number of objects and LINKS in group. Otherwise for small groups it is too strong. For large groups with many links it is also too strong (1.5 strong, 0.9 ok)
-					return (0.9 / nodesInLargestGroup);
-				else 
-					//return 0.1;
-					return 0.5;
-			})
-		)
 		//.force("center", d3.forceCenter(svgWidth / 2 + 50, height / 2))
 		.force("collision", d3.forceCollide()
 			.radius(function(d) {
@@ -610,7 +627,40 @@ function drawL1Map() {
 					return COLLISION_RADIUS;
 			})
 		);
-
+		if (graph.vertical) {
+			globalSimulation
+				.force("x", d3.forceX(function(d){ return d.group * svgWidth / groupsArray.length - 60; })
+					.strength(4)
+				)
+				.force("y", d3.forceY(function(d){ return svgHeight/2; })
+					.strength(function (d){
+						// values from 0.5 to 0.01?
+						if (nodesInLargestGroup)
+							//return (0.9 / nodesInLargestGroup); // TODO: do it the function of number of objects and LINKS in group. Otherwise for small groups it is too strong. For large groups with many links it is also too strong (1.5 strong, 0.9 ok)
+							return (0.9 / nodesInLargestGroup);
+						else 
+							//return 0.1;
+							return 0.5;
+					})
+				)
+		}
+		else {
+			globalSimulation
+				.force("y", d3.forceY(function(d){ return d.group * svgHeight / groupsArray.length; })
+					.strength(4)
+				)
+				.force("x", d3.forceX(function(d){ return svgWidth/2; })
+					.strength(function (d){
+						// values from 0.5 to 0.01?
+						if (nodesInLargestGroup)
+							//return (0.9 / nodesInLargestGroup); // TODO: do it the function of number of objects and LINKS in group. Otherwise for small groups it is too strong. For large groups with many links it is also too strong (1.5 strong, 0.9 ok)
+							return (0.9 / nodesInLargestGroup);
+						else 
+							//return 0.1;
+							return 0.5;
+					})
+				)
+		}
 		
 	var link1 = svg.append("g")
 		.attr("id", "links") 
@@ -669,8 +719,25 @@ function drawL1Map() {
 		.attr("x", -16)
 		.attr("y", -16);
 	node.append("text")
-		.attr("dx", 16)
-		.attr("dy", function(d) {if (d.class == "circuits" && d.type == "circuit") return 8; else return 4;} )
+		.attr("dx", function(d) {
+			if (graph.vertical)
+				return 16;
+			else
+				return -24;
+		})
+		.attr("dy", function(d) {
+			if (graph.vertical)
+				if (d.class == "circuits" && d.type == "circuit") 
+					return 8;
+				else 
+					return 4;
+
+			else
+				if (d.class == "circuits" && d.type == "circuit") 
+					return 40;
+				else 
+					return 36;
+		})
 		.attr("x", +8)
 		.attr("font-weight", function(d) { if ("thisIsCollapsedVC" in d) return "bold"; else return "normal"; })
 		.text(function(d) { 
@@ -685,7 +752,12 @@ function drawL1Map() {
 		.attr("fill", "grey")
 		.attr("font-size", "0.8em")
 		.attr("dx", 16)
-		.attr("dy", -6)
+		.attr("dy", function(d) {
+			if (graph.vertical)
+				return -6;
+			else
+				return 26;
+		})
 		.attr("x", +8)
 		.attr("font-weight", "normal")
 		.text(function(d) { 
@@ -942,299 +1014,211 @@ function drawL1Map() {
 
 		cluster.select("text")
 			.attr("transform", function(d) {
-				var minX = 100000;
-				var maxX = 0;
-				var minY = 100000;
-				var maxY = 0;
-				var leftGroup = 100000;
-				var rightGroup = 0;
-				
-				var leftY1 = 100000;
-				var leftY2 = 0;
-				var rightY1 = 100000;
-				var rightY2 = 0;
-				
-				for (var i = 0; i < graph.nodes.length; i++) {
-					if ("cluster" in graph.nodes[i] && 
-						graph.nodes[i].cluster === d.id && 
-						graph.nodes[i].hasOwnProperty("x") && 
-						graph.nodes[i].x > 0 )
-					{
-						if (graph.nodes[i].x < minX) 
-							minX = graph.nodes[i].x;
-						if (graph.nodes[i].x > maxX) 
-							maxX = graph.nodes[i].x;
-
-						if (graph.nodes[i].group < leftGroup) 
-							leftGroup = graph.nodes[i].group;
-						if (graph.nodes[i].group > rightGroup) 
-							rightGroup = graph.nodes[i].group;
-							
-						if (graph.nodes[i].y < minY) 
-							minY = graph.nodes[i].y;
-						if (graph.nodes[i].y > maxY) 
-							maxY = graph.nodes[i].y;
-							
-						if (graph.nodes[i].group === leftGroup) 
-							if (graph.nodes[i].y < leftY1)
-								leftY1 = graph.nodes[i].y;
-							else if (graph.nodes[i].y > leftY2)
-								leftY2 = graph.nodes[i].y;
-							else
-								{}
-						
-						if (graph.nodes[i].group === rightGroup) 
-							if (graph.nodes[i].y < rightY1)
-								rightY1 = graph.nodes[i].y;
-							else if (graph.nodes[i].y > rightY2)
-								rightY2 = graph.nodes[i].y;
-							else
-								{}
-					}
-				}
-				d.minX = minX;
-				d.maxX = maxX;
-				d.minY = minY;
-				d.maxY = maxY;
-				return "translate(" + (minX - 21) + "," + (leftY1 - 21) + ")";
+				c = getClusterNodesCoordinates(graph.nodes, d.id, "cluster", graph.vertical);
+				return getClusterLabelSvgPositionFromCoordinates(c, graph.vertical);
 			});
 
 		cluster		
 			.select("path")
 				.attr("d", function(d) {
-					var minX = 100000;
-					var maxX = 0;
-					var minY = 100000;
-					var maxY = 0;
-					var leftGroup = 100000;
-					var rightGroup = 0;
-					
-					var leftY1 = 100000;
-					var leftY2 = 0;
-					var rightY1 = 100000;
-					var rightY2 = 0;
-
-					for (var i = 0; i < graph.nodes.length; i++) {
-						if ("cluster" in graph.nodes[i] && 
-							graph.nodes[i].cluster === d.id && 
-							graph.nodes[i].hasOwnProperty("x") && 
-							graph.nodes[i].x > 0 )
-						{
-							if (graph.nodes[i].group < leftGroup) 
-								leftGroup = graph.nodes[i].group;
-								
-							if (graph.nodes[i].x < minX)
-								minX = graph.nodes[i].x;
-							
-							if (graph.nodes[i].group > rightGroup)
-								rightGroup = graph.nodes[i].group;
-								
-							if (graph.nodes[i].x > maxX)
-								maxX = graph.nodes[i].x;						}
-					}
-
-					for (var i = 0; i < graph.nodes.length; i++) {
-						if ("cluster" in graph.nodes[i] && 
-							graph.nodes[i].cluster === d.id && 
-							graph.nodes[i].hasOwnProperty("x") && 
-							graph.nodes[i].x > 0 )
-						{
-							if (graph.nodes[i].group === leftGroup) {
-								if (graph.nodes[i].y < leftY1)
-									leftY1 = graph.nodes[i].y;
-								if (graph.nodes[i].y > leftY2)
-									leftY2 = graph.nodes[i].y;		
-							}
-							
-							if (graph.nodes[i].group === rightGroup)  {
-								if (graph.nodes[i].y < rightY1) {
-									rightY1 = graph.nodes[i].y;
-								}
-								if (graph.nodes[i].y > rightY2)
-									rightY2 = graph.nodes[i].y;
-							}
-						}
-					}
-			
-					minX -= 20;
-					maxX += 20;
-					leftY1 -= 20;
-					leftY2 += 20;
-					rightY1 -= 20;
-					rightY2 += 20;
-					
-					path = "M " + minX + "," + leftY1 + " ";
-					if (leftY1 < rightY1)
-						path += "L " + (minX + 40) + ", " + leftY1 + " ";
-					else
-						path += "L " + (maxX - 40) + ", " + rightY1 + " ";
-					path += "L " + maxX + "," + rightY1 + " " +
-						   "L " + maxX + "," + rightY2 + " ";
-					if (leftY2 > rightY2)
-						path += "L " + (minX + 40) + ", " + leftY2 + " ";
-					else
-						path += "L " + (maxX - 40) + ", " + rightY2 + " ";
-					
-					path += "L " + minX + "," + leftY2 + " " +
-						   "Z";
-					
+					c = getClusterNodesCoordinates(graph.nodes, d.id, "cluster", graph.vertical);
+					path = getClusterSvgPathFromCoordinates(c, graph.vertical);
 					return path;
 				});
 
 
 		vc.select("text")
 			.attr("transform", function(d) {
-				var minX = 100000;
-				var maxX = 0;
-				var minY = 100000;
-				var maxY = 0;
-				var leftGroup = 100000;
-				var rightGroup = 0;
-				
-				var leftY1 = 100000;
-				var leftY2 = 0;
-				var rightY1 = 100000;
-				var rightY2 = 0;
-				
-				for (var i = 0; i < graph.nodes.length; i++) {
-					if 	("virtual_chassis" in graph.nodes[i] && 
-							graph.nodes[i].virtual_chassis === d.id /*&& 
-							graph.nodes[i].hasOwnProperty("x") && 
-							graph.nodes[i].x > 0 */
-						)
-					{
-						if (graph.nodes[i].x < minX) 
-							minX = graph.nodes[i].x;
-						if (graph.nodes[i].x > maxX) 
-							maxX = graph.nodes[i].x;
-
-						if (graph.nodes[i].group < leftGroup) {
-							leftGroup = graph.nodes[i].group;
-							leftY1 = 100000;
-							leftY2 = 0;
-						}
-						if (graph.nodes[i].group > rightGroup) { 
-							rightGroup = graph.nodes[i].group;
-							rightY1 = 100000;
-							rightY2 = 0;
-						}
-
-						if (graph.nodes[i].y < minY) 
-							minY = graph.nodes[i].y;
-						if (graph.nodes[i].y > maxY) 
-							maxY = graph.nodes[i].y;
-							
-						if (graph.nodes[i].group === leftGroup) {
-							if (graph.nodes[i].y < leftY1)
-								leftY1 = graph.nodes[i].y;
-							else if (graph.nodes[i].y > leftY2)
-								leftY2 = graph.nodes[i].y;
-							else
-								{}
-						}
-						
-						if (graph.nodes[i].group === rightGroup) 
-							if (graph.nodes[i].y < rightY1)
-								rightY1 = graph.nodes[i].y;
-							else if (graph.nodes[i].y > rightY2)
-								rightY2 = graph.nodes[i].y;
-							else
-								{}
-					}
-				}
-				
-				d.minX = minX;
-				d.maxX = maxX;
-				d.minY = minY;
-				d.maxY = maxY;
-				
-				return "translate(" + (minX - 21) + "," + (leftY1 - 21) + ")";
+				c = getClusterNodesCoordinates(graph.nodes, d.id, "virtual_chassis", graph.vertical);
+				return getClusterLabelSvgPositionFromCoordinates(c, graph.vertical);
 			});
 
 		vc		
 			.select("path")
 				.attr("d", function(d) {
-					var minX = 100000;
-					var maxX = 0;
-					var minY = 100000;
-					var maxY = 0;
-					var leftGroup = 100000;
-					var rightGroup = 0;
-					
-					var leftY1 = 100000;
-					var leftY2 = 0;
-					var rightY1 = 100000;
-					var rightY2 = 0;
-					
-					for (var i = 0; i < graph.nodes.length; i++) {
-						if ("virtual_chassis" in graph.nodes[i] && 
-							graph.nodes[i].virtual_chassis === d.id && 
-							graph.nodes[i].hasOwnProperty("x") && 
-							graph.nodes[i].x > 0 )
-						{
-							if (graph.nodes[i].group < leftGroup) 
-								leftGroup = graph.nodes[i].group;
-								
-							if (graph.nodes[i].x < minX)
-								minX = graph.nodes[i].x;
-							
-							if (graph.nodes[i].group > rightGroup)
-								rightGroup = graph.nodes[i].group;
-								
-							if (graph.nodes[i].x > maxX)
-								maxX = graph.nodes[i].x;						}
-					}
+					c = getClusterNodesCoordinates(graph.nodes, d.id, "virtual_chassis", graph.vertical);
+					path = getClusterSvgPathFromCoordinates(c, graph.vertical);
 
-					for (var i = 0; i < graph.nodes.length; i++) {
-						if ("virtual_chassis" in graph.nodes[i] && 
-							graph.nodes[i].virtual_chassis === d.id && 
-							graph.nodes[i].hasOwnProperty("x") && 
-							graph.nodes[i].x > 0 )
-						{
-							if (graph.nodes[i].group === leftGroup) {
-								if (graph.nodes[i].y < leftY1)
-									leftY1 = graph.nodes[i].y;
-								if (graph.nodes[i].y > leftY2)
-									leftY2 = graph.nodes[i].y;		
-							}
-							
-							if (graph.nodes[i].group === rightGroup)  {
-								if (graph.nodes[i].y < rightY1) {
-									rightY1 = graph.nodes[i].y;
-								}
-								if (graph.nodes[i].y > rightY2)
-									rightY2 = graph.nodes[i].y;
-							}
-						}
-					}
-			
-					minX -= 20;
-					maxX += 20;
-					leftY1 -= 20;
-					leftY2 += 20;
-					rightY1 -= 20;
-					rightY2 += 20;
-					
-					path = "M " + minX + "," + leftY1 + " ";
-					if (leftY1 < rightY1)
-						path += "L " + (minX + 40) + ", " + leftY1 + " ";
-					else
-						path += "L " + (maxX - 40) + ", " + rightY1 + " ";
-					path += "L " + maxX + "," + rightY1 + " " +
-						   "L " + maxX + "," + rightY2 + " ";
-					if (leftY2 > rightY2)
-						path += "L " + (minX + 40) + ", " + leftY2 + " ";
-					else
-						path += "L " + (maxX - 40) + ", " + rightY2 + " ";
-					
-					path += "L " + minX + "," + leftY2 + " " +
-						   "Z";
-					
 					return path;
 				});
 
 	}
+
+	function getClusterSvgPathFromCoordinates(c, verticalMap) {
+		if (verticalMap){
+			path = "M " + (c["minX"] - 20) + "," + (c["leftY1"] - 20) + " ";
+
+			if ((c["leftY1"] - 20) < (c["rightY1"] - 20))
+				path += "L " + (c["minX"] + 20) + ", " + (c["leftY1"] - 20) + " ";
+			else
+				path += "L " + (c["maxX"] - 20) + ", " + (c["rightY1"] - 20)+ " ";
+			path += "L " + (c["maxX"] + 20) + "," + (c["rightY1"] - 20) + " " +
+				   "L " + (c["maxX"] + 20) + "," + (c["rightY2"] + 20) + " ";
+
+			if ((c["leftY2"] + 20) > (c["rightY2"] + 20))
+				path += "L " + (c["minX"] + 20) + ", " + (c["leftY2"] + 20) + " ";
+			else
+				path += "L " + (c["maxX"] - 20) + ", " + (c["rightY2"] + 20) + " ";
+			path += "L " + (c["minX"] -20) + "," + (c["leftY2"] + 20) + " " +
+				   "Z";
+		}
+		else {
+			path = "M " + (c["topX1"] - 20) + "," + (c["minY"] - 20) + " ";
+			
+			if ((c["topX1"] - 20) < (c["bottomX1"] - 20))
+				path += "L " + (c["topX1"] - 20) + ", " + (c["minY"] + 20) + " ";
+			else
+				path += "L " + (c["bottomX1"] - 20) + ", " + (c["maxY"] - 20)+ " ";
+			path += "L " + (c["bottomX1"] - 20) + "," + (c["maxY"] + 20) + " " +
+				   "L " + (c["bottomX2"] + 20) + "," + (c["maxY"] + 20) + " ";
+
+			if ((c["topX2"] + 20) > (c["bottomX2"] + 20))
+				path += "L " + (c["topX2"] + 20) + ", " + (c["minY"] + 20) + " ";
+			else
+				path += "L " + (c["bottomX2"] + 20) + ", " + (c["maxY"] - 20) + " ";
+			path += "L " + (c["topX2"] + 20) + "," + (c["minY"] -20) + " " +
+				   "Z";
+		}
+
+		return path;
+	}
+
+	function getClusterLabelSvgPositionFromCoordinates(c, verticalMap) {
+		if (verticalMap)
+			return "translate(" + (c["minX"] - 21) + "," + (c["leftY1"] - 21) + ")";
+		else
+			return "translate(" + (c["topX1"] - 21) + "," + (c["minY"] - 21) + ")";
+	}
+
+	function getClusterNodesCoordinates(nodes, nodeId, property, verticalMap) {
+		if (verticalMap)
+			return getLeftTopLeftBottomRightTopRightBottomNode(nodes, nodeId, property);
+		else
+			return getTopLeftTopRightBottomLeftBottomRightNode(nodes, nodeId, property);
+	}
+
+	function getLeftTopLeftBottomRightTopRightBottomNode(nodes, nodeId, property) {
+		var c = {
+			"minX": 100000,
+			"maxX": 0,
+			"leftY1": 100000,
+			"leftY2": 0,
+			"rightY1": 100000,
+			"rightY2": 0
+		}
+
+		// find X of the leftmost and rightmost VC node
+		var leftGroup = 100000;
+		var rightGroup = 0;
+		for (var i = 0; i < nodes.length; i++) {
+			if (property in nodes[i] && 
+				nodes[i][property] === nodeId && 
+				nodes[i].hasOwnProperty("x") && 
+				nodes[i].x > 0 )
+			{
+				if (nodes[i].group < leftGroup) 
+					leftGroup = nodes[i].group;
+					
+				if (nodes[i].x < c["minX"])
+					c["minX"] = nodes[i].x;
+				
+				if (nodes[i].group > rightGroup)
+					rightGroup = nodes[i].group;
+					
+				if (nodes[i].x > c["maxX"])
+					c["maxX"] = nodes[i].x;						
+			}
+		}
+
+		// find Y of the topmost and the lowermost VC node of left group
+		// find Y of the topmost and the lowermost VC node of right group
+		for (var i = 0; i < nodes.length; i++) {
+			if (property in nodes[i] && 
+				nodes[i][property] === nodeId && 
+				nodes[i].hasOwnProperty("x") && 
+				nodes[i].x > 0 )
+			{
+				if (nodes[i].group === leftGroup) {
+					if (nodes[i].y < c["leftY1"])
+						c["leftY1"] = nodes[i].y;
+					if (nodes[i].y > c["leftY2"])
+						c["leftY2"] = nodes[i].y;		
+				}
+				
+				if (nodes[i].group === rightGroup)  {
+					if (nodes[i].y < c["rightY1"]) {
+						c["rightY1"] = nodes[i].y;
+					}
+					if (nodes[i].y > c["rightY2"])
+						c["rightY2"] = nodes[i].y;
+				}
+			}
+		}
+
+		return c;
+	}
 	
+	function getTopLeftTopRightBottomLeftBottomRightNode(nodes, nodeId, property) {
+		var c = {
+			"minY": 100000,
+			"maxY": 0,
+			"topX1": 100000,
+			"topX2": 0,
+			"bottomX1": 100000,
+			"bottomX2": 0
+		}
+
+		// find Y of the topmost and lowermost VC node
+		var topGroup = 100000;
+		var lowerGroup = 0;
+		for (var i = 0; i < nodes.length; i++) {
+			if (property in nodes[i] && 
+				nodes[i][property] === nodeId && 
+				nodes[i].hasOwnProperty("y") && 
+				nodes[i].y > 0 )
+			{
+				if (nodes[i].group < topGroup) 
+					topGroup = nodes[i].group;
+					
+				if (nodes[i].y < c["minY"])
+					c["minY"] = nodes[i].y;
+				
+				if (nodes[i].group > lowerGroup)
+					lowerGroup = nodes[i].group;
+					
+				if (nodes[i].y > c["maxY"])
+					c["maxY"] = nodes[i].y;						
+			}
+		}
+
+		// find X of the leftmost and the rightmost VC node of top group
+		// find X of the leftmost and the rightmost VC node of lower group
+		for (var i = 0; i < nodes.length; i++) {
+			if (property in nodes[i] && 
+				nodes[i][property] === nodeId && 
+				nodes[i].hasOwnProperty("y") && 
+				nodes[i].y > 0 )
+			{
+				if (nodes[i].group === topGroup) {
+					if (nodes[i].x < c["topX1"])
+						c["topX1"] = nodes[i].x;
+					if (nodes[i].x > c["topX2"])
+						c["topX2"] = nodes[i].x;		
+				}
+				
+				if (nodes[i].group === lowerGroup)  {
+					if (nodes[i].x < c["bottomX1"]) {
+						c["bottomX1"] = nodes[i].x;
+					}
+					if (nodes[i].x > c["bottomX2"])
+						c["bottomX2"] = nodes[i].x;
+				}
+			}
+		}
+
+		return c;
+	}
+
 	function dragstarted(d) {
 		if (!d3.event.active) 
 			globalSimulation.alphaTarget(0.3).restart();

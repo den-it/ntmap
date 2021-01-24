@@ -57,13 +57,14 @@ def application(env, start_response):
 
             elif urlList[0] == "updatemap":
                 postvars = parse.parse_qs(env['wsgi.input'].readline().decode(),True)
-                if postvars and "id" in postvars and "name" in postvars and "group" in postvars and "scheme" in postvars:
+                if postvars and "id" in postvars and "name" in postvars and "group" in postvars and "scheme" in postvars and "vertical" in postvars:
                     id = re.search("^\d+$", postvars["id"][0])
                     group = re.search("^\d+$", postvars["group"][0])
                     name = postvars["name"][0]
                     scheme = postvars["scheme"][0]
+                    vertical = postvars["vertical"][0]
                     if id and group and name and scheme:
-                        jsn = updateMap(id.group(), group.group(), name, scheme)
+                        jsn = updateMap(id.group(), group.group(), name, scheme, vertical)
                     else:
                         jsn =  { "result": "Input parameters error" }
                 else:
@@ -100,16 +101,16 @@ def deleteMap(mapID):
 
 
 ################################################################################
-def updateMap(mapID, groupID, mapName, mapScheme):
+def updateMap(mapID, groupID, mapName, mapScheme, vertical):
     try:
         mapSchemeDict = json.loads(mapScheme)
     except json.decoder.JSONDecodeError as err:
         return { "result": "Scheme is not a valid JSON: " + str(err) + ": " +str(mapScheme) }
 
     if int(mapID):
-        result = app.common.insertToDB(app.common.config["ntmap"]["db"], "UPDATE ntmap_l1_maps SET name='" + mapName +  "', group_id=" + str(groupID)  + ", scheme='" + mapScheme + "' WHERE id=" + str(mapID) + ";")
+        result = app.common.insertToDB(app.common.config["ntmap"]["db"], "UPDATE ntmap_l1_maps SET name='" + mapName +  "', group_id=" + str(groupID)  + ", scheme='" + mapScheme + "', vertical=" + str(vertical) + " WHERE id=" + str(mapID) + ";")
     else:
-        result = app.common.insertToDB(app.common.config["ntmap"]["db"], "INSERT INTO ntmap_l1_maps (name, group_id, scheme) VALUES ('" + mapName + "', " + str(groupID) + ", '" + mapScheme + "');")
+        result = app.common.insertToDB(app.common.config["ntmap"]["db"], "INSERT INTO ntmap_l1_maps (name, group_id, scheme, vertical) VALUES ('" + mapName + "', " + str(groupID) + ", '" + mapScheme + "', " + str(vertical) + ");")
 
     return result
  
@@ -266,7 +267,7 @@ def getCircuitsConnectedToInterface(circuits, interface_netbox_id):
 # Input: (int) map id
 # Output: JSON
 def getMap(id):
-    graphJson = {"result": "", "results": { "nodes": [], "links": [], "mng_links": [],"interfaces": {} } }
+    graphJson = {"result": "", "results": { "nodes": [], "links": [], "mng_links": [], "interfaces": {}, "vertical": True } }
 
     res = app.common.queryDB(app.common.config["ntmap"]["db"], "SELECT * FROM ntmap_l1_maps WHERE id=" + str(id))
     
@@ -280,6 +281,7 @@ def getMap(id):
     
     if selectedMap:
         selectedMapStr = selectedMap[0]
+        graphJson["results"]["vertical"] = selectedMapStr["vertical"]
         selectedMapScheme = json.loads(selectedMapStr["scheme"])
         
         # Make a machine-friendly dictionary from user-friendly dictionary:

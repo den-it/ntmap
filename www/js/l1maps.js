@@ -48,6 +48,10 @@ function showMapUpdateForm(mapID) {
 				document.getElementById("mapGroup").options["select-option-group-" + globalMapsList[i]["maps"][j]["group_id"]].selected = true;
 				document.getElementById('mapName').value = globalMapsList[i]["maps"][j]["name"];
 				document.getElementById('mapScheme').value = jsonSchemeToTxt(globalMapsList[i]["maps"][j]["scheme"]);
+				if (globalMapsList[i]["maps"][j]["vertical"])
+					document.getElementById('radioVertMap').checked = true;
+				else
+					document.getElementById('radioHorizMap').checked = true;
 			}
 		}
 	}
@@ -86,7 +90,8 @@ function hideMapUpdateForm() {
 	document.getElementById('mapID').value = "";
 	document.getElementById('mapGroup').value = "";
 	document.getElementById('mapName').value = "";
-	document.getElementById('mapScheme').value = "";		
+	document.getElementById('mapScheme').value = "";
+	// we don't reset radio button (vertical vs horizontal map) status
 
 	return false;
 }
@@ -180,6 +185,10 @@ function updateMap() {
 	var group = document.getElementById('mapGroup').value;
 	var name = document.getElementById('mapName').value.trim();
 	var scheme = document.getElementById('mapScheme').value.trim();
+	var vertMap = false;
+	if (document.getElementById('radioVertMap').checked)
+		vertMap = true;
+
 	
 	if (!name) {
 		showMapError("Name can't be blank");
@@ -234,11 +243,13 @@ function updateMap() {
 		 }
 	  }
    }
-   
+
+
    var body = 	"id=" + encodeURIComponent(id) + 
 						"&group=" + encodeURIComponent(group) + 
 						"&name=" + encodeURIComponent(name) +
-						"&scheme=" + encodeURIComponent(jsonStr);
+						"&scheme=" + encodeURIComponent(jsonStr) +
+						"&vertical=" + encodeURIComponent(vertMap);
 
    globalRequest.onreadystatechange = processReqChange;
    globalRequest.open("POST", NTMAP_BACKEND_URI + "/updatemap", true);

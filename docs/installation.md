@@ -40,8 +40,9 @@ CREATE TABLE
 ntmap=# CREATE TABLE ntmap_l1_maps (
 	id 			SERIAL PRIMARY KEY,
 	name 		VARCHAR(300) NOT NULL CHECK (name <> '') UNIQUE,
-	group_id 	INT REFERENCES ntmap_l1_groups(id),
-	scheme 		VARCHAR(2000)
+	group_id 	INT REFERENCES ntmap_l1_groups(id) NOT NULL,
+	scheme 		VARCHAR(2000),
+	vertical	BOOLEAN NOT NULL
 	);
 CREATE TABLE
 ntmap=# GRANT USAGE, SELECT ON SEQUENCE ntmap_l1_maps_id_seq TO ntmap;

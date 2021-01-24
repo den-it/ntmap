@@ -39,6 +39,7 @@ And a network graph for management links like this:
 
 **Note:** link is considered to be a management link when at least one of the interfaces forming the link is marked as "OOB Management" in Netbox.
 
+You can select horizontal (traditional) or vertical (OpenStack-style) orientation of the map. Some maps look better in traditional view, others are prettier in vertical orientation, especially when you have a lot of devices at one level. 
 
 ### Changing Ntmap Settings
 

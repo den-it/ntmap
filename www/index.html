@@ -28,6 +28,8 @@
 				</p>
 				<p><div class="field-caption">Name:</div><input type="text" size="80" value="" id="mapName"></input></p>
 				<p><div class="field-caption">Scheme:</div><textarea cols="80" rows="10" id="mapScheme"></textarea></p>
+				<p><input name="vert" type="radio" value="true" id="radioVertMap" checked="" /> Vertical<br/>
+					<input name="vert" type="radio" value="false" id="radioHorizMap"/> Horizontal</p>
 				<div style="display: none;" id="map-error-message"></div>
 				<p><input type="button" value="Update & Close" onclick="updateMapAndClose();"></input> <input type="button" value="Update" id="update-button" onclick="updateMap();"></input> <input type="button" value="Cancel" onclick="hideMapUpdateForm();"></input></p>
 				</form>
