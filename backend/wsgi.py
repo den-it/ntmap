@@ -172,7 +172,7 @@ def getMaps():
 # Example input: "10gbase-x-sfpp"
 # Example output: 10
 #
-# Possible inputs:
+# Example inputs:
 # 100base-tx
 # 1000base-t
 # 1000base-x-sfp
@@ -196,8 +196,9 @@ def getLinkSpeedOutOfFormFactor(formFactor):
     if (speed):
         speedInShortFormat = re.search("\d+", speed.group(0))
         return float(speedInShortFormat.group(0))
-    
-    return None
+    else:
+        return float(LINK_SPEED_UNKNOWN)
+
 
 
 # Takes two adjacent interfaces speed (float) and returns link speed (float)

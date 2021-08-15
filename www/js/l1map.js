@@ -117,7 +117,10 @@ function onClickDeviceDetails(device, interfaces) {
 			sp = "?";
 		else 
 			sp = interfaces[i].speed;
-		text += "<td class='link" + parseInt(interfaces[i].speed) + "gb-info' valign='middle' align='center' style='padding: 0;'><div style='opacity: 0;' class='link-speed-info' id='speed-info-" + i + "'>" + sp + "</div></td>";
+		if (interfaces[i].speed == 0.1)
+			text += "<td class='link0_1gb-info' valign='middle' align='center' style='padding: 0;'><div style='opacity: 0;' class='link-speed-info' id='speed-info-" + i + "'>" + sp + "</div></td>";
+		else
+			text += "<td class='link" + parseInt(interfaces[i].speed) + "gb-info' valign='middle' align='center' style='padding: 0;'><div style='opacity: 0;' class='link-speed-info' id='speed-info-" + i + "'>" + sp + "</div></td>";
 
 		text += "<td nowrap><a target='_blank' href='" + NETBOX_URL + "/dcim/interfaces/" + interfaces[i].netbox_id + "/'>" + interfaces[i].name + "</a></td>";
 			
@@ -668,15 +671,14 @@ function drawL1Map() {
 		.data(graph.links)
 		.enter()
 		.append("path")
-			.attr("class", function(d) { return "link" + parseInt(d.bandwidth) + "gb"; })
-			.attr("stroke-width", function(d) { if ("type" in d) return 0; else if (d.bandwidth == 0) return 1; else return Math.sqrt(parseInt(d.bandwidth))/2; });
+			.attr("class", function(d) { if (d.bandwidth == 0.1) return "link0_1gb"; else return "link" + parseInt(d.bandwidth) + "gb"; });
 
 	var labelCircle = svg.append("g")
 		.attr("id", "labelCircles") 
 		.selectAll("circle")
 		.data(graph.links)
 		.enter().append("circle")
-			.attr("class", function(d) { return "link" + parseInt(d.bandwidth) + "gb-label-circle"; })
+			.attr("class", function(d) {  if (d.bandwidth == 0.1) return "link0_1gb-label-circle"; else return "link" + parseInt(d.bandwidth) + "gb-label-circle"; })
 			.attr("r", function(d) { 
 				if (d.quantity > 1) 
 					return "7" 

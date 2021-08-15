@@ -96,90 +96,126 @@ g#links {
 	fill: white;
 }
 
-.link0gb {
-  stroke: black;
-  stroke-dasharray: 5,5;
+/* Colors to distinguish links of different speeds */
+:root {
+	--color0: #000000;
+	--color1: #777777;
+	--color2: #e1a800;
+	--color3: #00DCB4;
+	--color4: #8600FF;
+	--color5: #bc104b;
 }
 
-.link0gb-info {
-	background: black;
-}
-
-.link0gb-label-circle {
-  fill: black;
-}
-
+/* Links with unknown speed */
 .link-1gb {
   stroke: red;
+  stroke-width: 1px;
 }
-
 .link-1gb-info {
 	background: red;
 }
-
 .link-1gb-label-circle {
   fill: red;
 }
 
+/* Virtual links (circuits) */
+.link0gb {
+  stroke: var(--color0);
+  stroke-width: 1px;
+  stroke-dasharray: 5,5;
+}
+.link0gb-info {
+	background: var(--color0);
+}
+.link0gb-label-circle {
+  fill: var(--color0);
+}
+
+/* Links with speed 10/100 Mbit/sec */
+.link0_1gb {
+  stroke: var(--color1);
+  stroke-width: 1px;
+}
+.link0_1gb-info {
+	background: var(--color1);
+}
+.link0_1gb-label-circle {
+  fill: var(--color1);
+}
+
+
+.link1gb, .link2gb, .link5gb {
+  stroke: var(--color2);
+  stroke-width: 1px;
+}
 .link1gb {
-  stroke: #e1a800;
+  stroke-width: 1px;
+}
+.link2gb {
+  stroke-width: 1.5px;
+}
+.link5gb {
+  stroke-width: 2px;
+}
+.link1gb-info, .link2gb-info, .link5gb-info {
+	background: var(--color2);
+}
+.link1gb-label-circle, .link2gb-label-circle, .link5gb-label-circle {
+  fill: var(--color2);
 }
 
-.link1gb-info {
-	background: #e1a800;
-}
-
-.link1gb-label-circle {
-  fill: #e1a800;
-}
 
 .link10gb {
-  stroke: #00DCB4;
+  stroke: var(--color3);
+  stroke-width: 2px;
 }
-
 .link10gb-info {
-	background: #00DCB4;
+	background: var(--color3);
 }
-
 .link10gb-label-circle {
-  fill: #00DCB4;
+  fill: var(--color3);
 }
 
+
+.link25gb, .link40gb, .link50gb {
+  stroke: var(--color4);
+}
 .link25gb {
-  stroke: #75939c;
+  stroke-width: 2px;
 }
-
-.link25gb-info {
-	background: #75939c;
-}
-
-.link25gb-label-circle {
-  fill: #75939c;
-}
-
 .link40gb {
-  stroke: #8600FF;
+  stroke-width: 3px;
+}
+.link50gb {
+  stroke-width: 4px;
+}
+.link25gb-info, .link40gb-info, .link50gb-info {
+	background: var(--color4);
+}
+.link25gb-label-circle, .link40gb-label-circle, .link50gb-label-circle {
+  fill: var(--color4);
 }
 
-.link40gb-info {
-	background: #8600FF;
-}
 
-.link40gb-label-circle {
-  fill: #8600FF;
+.link100gb, .link200gb, .link400gb {
+  stroke: var(--color5);
 }
-
 .link100gb {
-  stroke: #bc104b;
+  stroke-width: 4px;
+}
+.link200gb {
+  stroke-width: 6px;
+}
+.link400gb {
+  stroke-width: 8px;
+}
+.link100gb-info, .link200gb-info, .link400gb-info {
+	background: var(--color5);
+}
+.link100gb-label-circle, .link200gb-label-circle, .link400gb-label-circle {
+  fill: var(--color5);
 }
 
-.link100gb-info {
-	background: #bc104b;
-}
-
-.link100gb-label-circle {
-  fill: #bc104b;
-}
 
 .clusters rect, .clusters path, rect.clusters {
 	stroke: #666666;

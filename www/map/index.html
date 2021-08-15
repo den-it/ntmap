@@ -66,30 +66,45 @@
 
 				</table>
 				
-							<svg height="200" width="800" id="legend" style="margin-top: 20px; display:none;">
-								<rect x="0" y="0" width="799" height="199" style="fill:white; stroke:#999999;"></rect>
+							<svg height="200" width="1000" id="legend" style="margin-top: 20px; display:none;">
+								<rect x="0" y="0" width="999" height="199" style="fill:white; stroke:#999999;"></rect>
 							<g transform="translate(20, 20)">
 								<text x="0" y="10" class="secondary_text">Physical links:</text>
 								<g transform="translate(0, 40)">
-									<line class="link100gb" stroke-width="5" x1="0" y1="5" x2="40" y2="5"></line>
-									<text x="50" y="10">100 Gigabit/sec</text>
-									<line class="link40gb" stroke-width="3.16" x1="0" y1="25" x2="40" y2="25"></line>
-									<text x="50" y="30">40 Gigabit/sec</text>
-									<line class="link25gb" stroke-width="2.5" x1="0" y1="45" x2="40" y2="45"></line>
-									<text x="50" y="50">25 Gigabit/sec</text>
-									<line class="link10gb" stroke-width="1.58" x1="0" y1="65" x2="40" y2="65"></line>
-									<text x="50" y="70">10 Gigabit/sec</text>
-									<line class="link1gb" stroke-width="0.5" x1="0" y1="85" x2="40" y2="85"></line>
-									<text x="50" y="90">1 Gigabit/sec</text>
-									<circle class="link10gb-label-circle" r="7" cx="21" cy="105"></circle>
+									<line class="link400gb" stroke-width="5" x1="0" y1="5" x2="40" y2="5"></line>
+									<text x="50" y="10">400 Gigabit/sec</text>
+									<line class="link200gb" stroke-width="3.16" x1="0" y1="25" x2="40" y2="25"></line>
+									<text x="50" y="30">200 Gigabit/sec</text>
+									<line class="link100gb" stroke-width="2.5" x1="0" y1="45" x2="40" y2="45"></line>
+									<text x="50" y="50">100 Gigabit/sec</text>
+									<line class="link50gb" stroke-width="1.58" x1="0" y1="65" x2="40" y2="65"></line>
+									<text x="50" y="70">50 Gigabit/sec</text>
+									<line class="link40gb" stroke-width="0.5" x1="0" y1="85" x2="40" y2="85"></line>
+									<text x="50" y="90">40 Gigabit/sec</text>
+									<line class="link25gb" stroke-width="0.5" x1="0" y1="105" x2="40" y2="105"></line>
+									<text x="50" y="110">25 Gigabit/sec</text>
+								</g>
+
+								<g transform="translate(200, 40)">
+									<line class="link10gb" stroke-width="5" x1="0" y1="5" x2="40" y2="5"></line>
+									<text x="50" y="10">10 Gigabit/sec</text>
+									<line class="link5gb" stroke-width="3.16" x1="0" y1="25" x2="40" y2="25"></line>
+									<text x="50" y="30">5 Gigabit/sec</text>
+									<line class="link2gb" stroke-width="2.5" x1="0" y1="45" x2="40" y2="45"></line>
+									<text x="50" y="50">2.5 Gigabit/sec</text>
+									<line class="link1gb" stroke-width="1.58" x1="0" y1="65" x2="40" y2="65"></line>
+									<text x="50" y="70">1 Gigabit/sec</text>
+									<line class="link0_1gb" stroke-width="0.5" x1="0" y1="85" x2="40" y2="85"></line>
+									<text x="50" y="90">100/10 Mbit/sec</text>
+									<circle class="link0_1gb-label-circle" r="7" cx="21" cy="105"></circle>
 									<g class="labels"><text dy="3" x="18" y="105">2</text></g>
 									<text x="51" y="110">Number of links</text>
 								</g>
+
+								<text x="396" y="10" class="secondary_text">Cluster</text>
+								<text x="396" y="28" class="secondary_text">(separate control planes):</text>
 								
-								<text x="196" y="10" class="secondary_text">Cluster</text>
-								<text x="196" y="28" class="secondary_text">(separate control planes):</text>
-								
-								<g transform="translate(0, 20)">
+								<g transform="translate(200, 20)">
 									<text x="200" y="31" style="font-weight: bold;">dc2-ext-fw01</text>
 									<image xlink:href="/img/firewall.svg" width="32" height="32" x="200" y="40"></image>
 									<text x="240" y="60">node01</text>
@@ -98,9 +113,9 @@
 									<rect x="196" y="36" height="100" width="40" class="clusters"/>
 								</g>
 
-								<text x="396" y="10" class="secondary_text">Virtual chassis</text>
-								<text x="396" y="28" class="secondary_text">(one control plane):</text>
-								<g transform="translate(0, 20)">
+								<text x="596" y="10" class="secondary_text">Virtual chassis</text>
+								<text x="596" y="28" class="secondary_text">(one control plane):</text>
+								<g transform="translate(200, 20)">
 									<text x="400" y="31" style="font-weight: bold;">dc2-core-sw01</text>
 									<image xlink:href="/img/coreswitch.svg" width="32" height="32" x="400" y="40"></image>
 									<text x="440" y="60">node01</text>
@@ -109,13 +124,15 @@
 									<rect x="396" y="36" height="100" width="40" class="VCs"/>
 								</g>
 								
-								<text x="596" y="10" class="secondary_text">Virtual chassis</text>
-								<text x="596" y="28" class="secondary_text">(in collapsed mode):</text>
-								<image xlink:href="/img/switch.svg" width="32" height="32" x="600" y="40"></image>
-								<text x="640" y="60" style="font-weight: bold;">dc2-core-sw01</text>
-								<image xlink:href="/img/vc.svg" width="16" height="16" x="624" y="32"></image>
+								<text x="796" y="10" class="secondary_text">Virtual chassis</text>
+								<text x="796" y="28" class="secondary_text">(in collapsed mode):</text>
+								<g transform="translate(200, 10)">
+									<image xlink:href="/img/switch.svg" width="32" height="32" x="600" y="40"></image>
+									<text x="640" y="60" style="font-weight: bold;">dc2-core-sw01</text>
+									<image xlink:href="/img/vc.svg" width="16" height="16" x="624" y="32"></image>
+								</g>
 								
-								<g transform="translate(0, 100)">
+								<g transform="translate(200, 100)">
 									<text x="596" y="10" class="secondary_text">Standalone node:</text>
 									<text x="596" y="28" class="secondary_text"></text>
 									<image xlink:href="/img/switch.svg" width="32" height="32" x="600" y="20"></image>
@@ -141,7 +158,7 @@
 	<div style="height: 1px; background: #aaaaaa;"></div>
 	<table style="width: 100%; height: calc(100% - 1px);">
 		<tr>
-			<td style="padding-left: 21px;" class="secondary_text">v0.7.0</td>
+			<td style="padding-left: 21px;" class="secondary_text">v0.7.1</td>
 			<td style="padding-right: 21px; text-align: right;" class="secondary_text"><a href="https://github.com/den-it/ntmap/blob/master/docs/index.md">Docs</a></td>
 		</tr>
 	</table>
