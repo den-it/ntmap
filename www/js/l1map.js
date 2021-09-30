@@ -450,8 +450,8 @@ function drawL1Map() {
 				var similarLinks = false;
 				for (j in linksList) {
 					// for similar links just increment counter
-					if (graph.links[i].source === linksList[j].source && 
-						graph.links[i].target === linksList[j].target &&
+					if (((graph.links[i].source === linksList[j].source && graph.links[i].target === linksList[j].target) || 
+						graph.links[i].target === linksList[j].source && graph.links[i].source === linksList[j].target()) &&
 						graph.links[i].bandwidth === linksList[j].bandwidth) {
 						similarLinks = true;
 						linksList[j].quantity = parseInt(linksList[j].quantity) + parseInt(graph.links[i].quantity);
