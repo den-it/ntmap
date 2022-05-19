@@ -462,7 +462,7 @@ def getMap(id):
                                 l.name AS lag,
                                 i.type AS type,
                                 i.description AS description,
-                                i._cable_peer_id AS neighbor_interface_netbox_id,
+                                i._link_peer_id AS neighbor_interface_netbox_id,
                                 ni.name AS neighbor_interface,
                                 ni.type AS neighbor_interface_type,
                                 ni.mgmt_only AS neighbor_interface_mgmt_only,
@@ -479,7 +479,7 @@ def getMap(id):
                                 ON l.id = i.lag_id
                             LEFT JOIN
                                 dcim_interface ni
-                                ON (ni.id = i._cable_peer_id AND i._cable_peer_type_id = 5) /* 5: interface, 7: circuit */
+                                ON (ni.id = i._link_peer_id AND i._link_peer_type_id = 5) /* 5: interface, 7: circuit */
                             LEFT JOIN 
                                 dcim_device nd
                                 ON ni.device_id = nd.id
