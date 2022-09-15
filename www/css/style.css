@@ -96,15 +96,6 @@ g#links {
 	fill: white;
 }
 
-/* Colors to distinguish links of different speeds */
-:root {
-	--color0: #000000;
-	--color1: #777777;
-	--color2: #e1a800;
-	--color3: #00DCB4;
-	--color4: #8600FF;
-	--color5: #bc104b;
-}
 
 /* Links with unknown speed */
 .link-1gb {
@@ -120,32 +111,32 @@ g#links {
 
 /* Virtual links (circuits) */
 .link0gb {
-  stroke: var(--color0);
+  stroke: #000000;
   stroke-width: 1px;
   stroke-dasharray: 5,5;
 }
 .link0gb-info {
-	background: var(--color0);
+	background: #000000;
 }
 .link0gb-label-circle {
-  fill: var(--color0);
+  fill: #000000;
 }
 
 /* Links with speed 10/100 Mbit/sec */
 .link0_1gb {
-  stroke: var(--color1);
+  stroke: #777777;
   stroke-width: 1px;
 }
 .link0_1gb-info {
-	background: var(--color1);
+	background: #777777;
 }
 .link0_1gb-label-circle {
-  fill: var(--color1);
+  fill: #777777;
 }
 
 
 .link1gb, .link2gb, .link5gb {
-  stroke: var(--color2);
+  stroke: #e1a800;
   stroke-width: 1px;
 }
 .link1gb {
@@ -158,27 +149,27 @@ g#links {
   stroke-width: 2px;
 }
 .link1gb-info, .link2gb-info, .link5gb-info {
-	background: var(--color2);
+	background: #e1a800;
 }
 .link1gb-label-circle, .link2gb-label-circle, .link5gb-label-circle {
-  fill: var(--color2);
+  fill: #e1a800;
 }
 
 
 .link10gb {
-  stroke: var(--color3);
+  stroke: #00DCB4;
   stroke-width: 2px;
 }
 .link10gb-info {
-	background: var(--color3);
+	background: #00DCB4;
 }
 .link10gb-label-circle {
-  fill: var(--color3);
+  fill: #00DCB4;
 }
 
 
 .link25gb, .link40gb, .link50gb {
-  stroke: var(--color4);
+  stroke: #8600FF;
 }
 .link25gb {
   stroke-width: 2px;
@@ -190,15 +181,15 @@ g#links {
   stroke-width: 4px;
 }
 .link25gb-info, .link40gb-info, .link50gb-info {
-	background: var(--color4);
+	background: #8600FF;
 }
 .link25gb-label-circle, .link40gb-label-circle, .link50gb-label-circle {
-  fill: var(--color4);
+  fill: #8600FF;
 }
 
 
 .link100gb, .link200gb, .link400gb {
-  stroke: var(--color5);
+  stroke: #bc104b;
 }
 .link100gb {
   stroke-width: 4px;
@@ -210,10 +201,10 @@ g#links {
   stroke-width: 8px;
 }
 .link100gb-info, .link200gb-info, .link400gb-info {
-	background: var(--color5);
+	background: #bc104b;
 }
 .link100gb-label-circle, .link200gb-label-circle, .link400gb-label-circle {
-  fill: var(--color5);
+  fill: #bc104b;
 }
 
 

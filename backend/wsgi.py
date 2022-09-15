@@ -415,15 +415,14 @@ def getMap(id):
                     circuits_circuittermination ct,
                     dcim_interface i,
                     dcim_device d,
-                    dcim_cable cab
+                    dcim_cabletermination cabt
                 WHERE
                     c.provider_id = p.id AND
                     c.type_id = t.id AND
                     ct.circuit_id = c.id AND
-                    ct.cable_id = cab.id AND (  
-                        (cab.termination_a_id = i.id AND cab.termination_a_type_id = 5) OR 
-                        (cab.termination_b_id = i.id AND cab.termination_b_type_id = 5)
-                    ) AND
+                    ct.cable_id = cabt.cable_id AND  
+                    cabt.termination_id = i.id AND 
+                    cabt.termination_type_id = 5 AND
                     i.device_id = d.id AND
                     d.id IN ({}) AND
                     p.id = {}
@@ -462,7 +461,7 @@ def getMap(id):
                                 l.name AS lag,
                                 i.type AS type,
                                 i.description AS description,
-                                i._cable_peer_id AS neighbor_interface_netbox_id,
+                                ni.id AS neighbor_interface_netbox_id,
                                 ni.name AS neighbor_interface,
                                 ni.type AS neighbor_interface_type,
                                 ni.mgmt_only AS neighbor_interface_mgmt_only,
@@ -478,9 +477,12 @@ def getMap(id):
                                 dcim_interface l
                                 ON l.id = i.lag_id
                             LEFT JOIN
+                                dcim_cabletermination ct
+                                ON  i.cable_id = ct.cable_id AND ct._device_id = d.id 
+                            LEFT JOIN
                                 dcim_interface ni
-                                ON (ni.id = i._cable_peer_id AND i._cable_peer_type_id = 5) /* 5: interface, 7: circuit */
-                            LEFT JOIN 
+                                ON ni.cable_id = ct.cable_id AND ni.device_id != i.device_id
+                            LEFT JOIN
                                 dcim_device nd
                                 ON ni.device_id = nd.id
                             WHERE
