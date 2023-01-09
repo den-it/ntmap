@@ -358,7 +358,6 @@ def getMap(id):
                             p.id AS netbox_id,
                             p.name AS id,
                             p.slug AS slug,
-                            p.asn AS asn,
                             'circuits' AS class,
                             'provider' AS type
                         FROM
